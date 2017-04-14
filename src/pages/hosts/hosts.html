@@ -1,0 +1,28 @@
+<ion-header>
+        <ion-navbar>
+		<button ion-button menuToggle>
+			<ion-icon name="menu"></ion-icon>
+		</button>
+		<ion-title>
+			Hosts
+		</ion-title>
+        </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+
+	<input type="file" (change)="upload()" multiple><br>
+
+	<ion-list *ngIf="!host">
+		<ion-item *ngFor="let h of hosts | async" (click)="hostPage(h.$key)">
+			key: {{h.key}}
+		</ion-item>
+	</ion-list>
+	
+	<ion-item *ngFor="let i of images | async">
+		{{showImage(i)}}<br>
+		<button ion-button (click)="read(i.$key)">Read</button>
+		<button ion-button (click)="destroyImage(i)">Delete</button>
+	</ion-item>
+
+</ion-content>
