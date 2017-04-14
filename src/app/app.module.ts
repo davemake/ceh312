@@ -16,8 +16,8 @@ import { Base } from "../providers/base";
 
 // npm install firebase angularfire2 --save
 import { AngularFireModule } from 'angularfire2'
-// npm install --save @ionic-native/text-to-speech
-import { TextToSpeech } from '@ionic-native/text-to-speech';
+// npm install @ionic-native/text-to-speech --save
+//import { TextToSpeech } from '@ionic-native/text-to-speech';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -46,6 +46,7 @@ const fbconfig = {
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
+    AngularFireModule.initializeApp(fbconfig)
   ],
   bootstrap: [IonicApp],
   entryComponents: [

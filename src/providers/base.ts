@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Platform } from 'ionic-angular';
-import { TextToSpeech } from '@ionic-native/text-to-speech';
 import { AngularFire, AngularFireDatabase, FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2';
 
 declare var window: any;
@@ -51,7 +50,6 @@ export class Base {
 
 	constructor(
 		public platform: Platform,
-		public tts: TextToSpeech,
 		public af: AngularFire,
 		public afd: AngularFireDatabase,
 	) {
