@@ -25,7 +25,8 @@
 	<ion-list *ngIf="type==null">
 		<ion-list-header>
 			<h1 text-capitalize>
-				What are you?
+				What do you<br>
+				want to be?
 			</h1>
 		</ion-list-header>
 		<ion-item>
@@ -39,17 +40,22 @@
 		</ion-item>
 	</ion-list>
 
-	<div *ngIf="type">
+	<div *ngIf="type && user">
 		<ion-list>
 			<ion-list-header>
-				<h2>
-					You are a signing up
-				</h2>
-				<h2>
-					to be a
-				</h2>
-				<h1 text-uppercase>
-					{{type}}!
+				<h1 text-wrap>
+					{{status}}
+				</h1>
+			</ion-list-header>
+		</ion-list>
+	</div>
+	
+	<div *ngIf="type && !user">
+
+		<ion-list>
+			<ion-list-header>
+				<h1 text-wrap>
+					{{status}}
 				</h1>
 			</ion-list-header>
 			<ion-item>
@@ -70,6 +76,7 @@
 				<button ion-button block small disabled>start</button>
 			</div>
 		</div>
+
 	</div>
 
 </ion-content>
