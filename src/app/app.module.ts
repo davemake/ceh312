@@ -6,9 +6,6 @@ import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { ListPage } from '../pages/list/list';
 import { User } from '../pages/users/user';
-import { Signup } from '../pages/users/signup';
-import { Login } from '../pages/users/login';
-import { Logout } from '../pages/users/logout';
 import { Hosts } from '../pages/hosts/hosts';
 import { Host } from '../pages/hosts/host';
 
@@ -36,9 +33,6 @@ const fbconfig = {
     MyApp,
     HomePage,
     ListPage,
-    Signup,
-    Login,
-    Logout,
     User,
     Hosts,
     Host
@@ -53,9 +47,6 @@ const fbconfig = {
     MyApp,
     HomePage,
     ListPage,
-    Signup,
-    Login,
-    Logout,
     User,
     Hosts,
     Host

@@ -13,12 +13,7 @@ export class Base {
 	newImage: any={name: ''};
 
 	host: any;
-	newUser: any={
-		created: '',
-		updated: '',
-	};
-	newHost: any={
-		key: '',
+	hostObj: any={
 		created: '',
 		updated: '',
 		who: {
@@ -40,8 +35,15 @@ export class Base {
 
 	snap: any;
 
+	currentUser: any;
 	user: any;
-	type: any;
+	role: any;
+	signed: any;
+	verified: any;
+	profiled: any;
+
+	student: any;
+	volunteer: any;
 
 	users: FirebaseListObservable<any>;
 	hosts: FirebaseListObservable<any>;
@@ -66,7 +68,13 @@ export class Base {
     }
 
 	userStateChanged(user) {
-		window.this.user = user;
+		if (user) {
+			window.this.currentUser = user;
+			window.this.signed = (new Date).getTime();
+			if (user.emailVerified) {
+				window.this.verified = window.this.signed;
+			}
+		}
 	}
 
 	
@@ -77,7 +85,7 @@ export class Base {
 		});
 	}
 
-	signoutUser() {
+	signout() {
 		this.auth.signOut().then( ()=> {
 			// Sign-out successful.
 		}).catch( (error)=> {
@@ -86,13 +94,12 @@ export class Base {
 	}
 	
 	create(many, one) {
-		this[one] = this.newHost;
+		this[one] = this.hostObj;
 		this[one].created = (new Date()).getTime();
 		this[one].key = this[many].push(this[one]).key;
 		return this[one];
 	}
 
-	// this.read('dogs', 'a1');
 	read(path, key) {
 		this.database.ref(path+'/'+key).on('value', this.readSnap, this.readSnapError);
 		return this.snap;
@@ -165,14 +172,14 @@ export class Base {
 	randomName(file) {
 		let name;
 		let parts;
-		let type;
+		let role;
 		let time;
 		name = Math.random().toString(36).replace(/[^a-z]+/g, '');
 		name = name.substring(0,10);
 		parts = file.name.split(".");
 		time = new Date().getTime();
-		type = parts[parts.length-1].toLowerCase();
-		name = time+name+"."+type
+		role = parts[parts.length-1].toLowerCase();
+		name = time+name+"."+role
 		return name
 	}
 
