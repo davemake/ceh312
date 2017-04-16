@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { Platform, NavController, NavParams } from 'ionic-angular';
+import { Platform, Nav, NavParams } from 'ionic-angular';
 import { Base } from "../../providers/base";
+import { Host } from '../hosts/host';
 
 declare let window: any;
 declare let cordova: any;
@@ -29,7 +30,7 @@ export class User {
 	signupMode: any;
 
 	constructor(
-		public nav: NavController, 
+		public nav: Nav, 
 		public params: NavParams,
 		public platform: Platform, 
 		public base: Base,
@@ -44,6 +45,10 @@ export class User {
 			this[role] = this.base[role] = this.base.read(role+"s", this.user.uid);
 		}
     }
+
+	navHost() {
+		this.nav.setRoot(Host);
+	}
 
 	setRole(role) {
 		this.role = role;
@@ -80,44 +85,20 @@ export class User {
 		
 	}
 
-	signinSuccess(user) {
-		window.this.base.database.ref("users/"+user.uid+"/signed").set((new Date).getTime());
-		let userObj = window.this.user = window.this.base.database.ref("users/"+user.uid);
-		window.this.signed = userObj.signed;
-		window.this.verified = userObj.verified;
-		window.this.profiled = userObj.profiled;
-		let role = window.this.role = window.this.user.role;
-		window.this[role] = window.this.base.read(role+"s", user.uid);
-	}
-
 	signout() {
 		this.base.signout();
+		this.user = null;
+		this.role = null;
+		this.signed = null;
+		this.verified = null;
+		this.profiled = null;
+		this.host = null;
+		this.student = null;
+		this.volunteer = null;
 	}
 
-	signoutSuccess() {
-		window.this.user = null;
-		window.this.role = null;
-		window.this.signed = null;
-		window.this.verified = null;
-		window.this.profiled = null;
-		window.this.host = null;
-		window.this.student = null;
-		window.this.volunteer = null;
-		window.this.hosts = null;
-		window.this.students = null;
-		window.this.volunteers = null;
-	}
-
-	deleteUser() {
-		
-	}
-
-	readUser(email, password) {
-		// read user
-	}
-
-	updateUser(user) {
-		// update user
+	delete() {
+		debugger;
 	}
 	
 	createUser(email, password, role) {
@@ -155,16 +136,14 @@ export class User {
 		window.this[role] = window.this.base[role] = window.this.base.read(role+"s", user.uid);
 	}
 
-	readUserSuccess(user) {
-		// load user
-	}
-
-	updateUserSuccess() {
-		// load new user params
-	}
-
-	deleteUserSuccess() {
-		// load new user params
+	signinSuccess(user) {
+		window.this.base.database.ref("users/"+user.uid+"/signed").set((new Date).getTime());
+		let userObj = window.this.user = window.this.base.database.ref("users/"+user.uid);
+		window.this.signed = userObj.signed;
+		window.this.verified = userObj.verified;
+		window.this.profiled = userObj.profiled;
+		let role = window.this.role = window.this.user.role;
+		window.this[role] = window.this.base.read(role+"s", user.uid);
 	}
 
 	catchError(error) {

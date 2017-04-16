@@ -119,6 +119,7 @@
 		Please Verify your Email
 	</div>
 	<div *ngIf="signed && verified && !profiled">
+		<button ion-button (click)="navHost()">Host</button>
 		Please Edit Your Profile
 	</div>
 	<div *ngIf="signed && verified && profiled">
