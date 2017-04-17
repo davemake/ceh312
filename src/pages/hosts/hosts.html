@@ -20,7 +20,7 @@
 	</ion-list>
 	
 	<ion-item *ngFor="let i of images | async">
-		{{showImage(i)}}<br>
+		{{imageId(i)}}<br>
 		<button ion-button (click)="read(i.$key)">Read</button>
 		<button ion-button (click)="destroyImage(i)">Delete</button>
 	</ion-item>

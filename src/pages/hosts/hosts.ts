@@ -46,15 +46,15 @@ export class Hosts {
 	}
 
 	upload() {
-		let images = this.base.uploadImages();
+		//let images = this.base.uploadImages();
 	}
 
-	showImage(i) {
-		return this.base.showImage(i);
+	imageId(i) {
+		return this.base.imageId(i);
 	}
 
 	read(key) {
-		this.host = this.base.read('hosts', key);
+		this.host = this.base.read('hosts/'+key);
 	}
 
 	update(key) {

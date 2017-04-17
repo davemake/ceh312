@@ -4,31 +4,31 @@
 			<ion-icon name="menu"></ion-icon>
 		</button>
 		<ion-title text-wrap>
-			<span *ngIf="!signed && signinMode">
-					<button ion-button disabled (click)="setMode('signin')">signin</button>
-					<button ion-button (click)="setMode('signup')">signup</button>
+			<span *ngIf="user">
+				<span>
+					User!
+					{{user.email}}
+				</span>
 			</span>
-			<span *ngIf="!signed && signupMode">
-					<button ion-button (click)="setMode('signin')">signin</button>
-					<button ion-button disabled (click)="setMode('signup')">signup</button>
-			</span>
-			<span *ngIf="!signed && signinMode">
-				Please Signin
-			</span>
-			<span *ngIf="!signed && signupMode">
-				Please Signup
+			<span *ngIf="!user">
+				<span *ngIf="signinMode">
+					Please Signin
+				</span>
+				<span *ngIf="signupMode">
+					Please Signup
+				</span>
 			</span>
 			<span *ngIf="signed">
-				<button ion-button (click)="signout()">signout</button>
-			</span>
-			<span *ngIf="signed && !verified">
-				Please Verify your Email
-			</span>
-			<span *ngIf="signed && verified && !profiled">
-				Please Edit Your Profile
-			</span>
-			<span *ngIf="signed && verified && profiled">
-				Please Enjoy!
+				{{user.email}}
+				<span *ngIf="!verified">
+					Please Verify your Email
+				</span>
+				<span *ngIf="verified && !profiled">
+					Please Update Your Profile
+				</span>
+				<span *ngIf="verified && profiled">
+					Please Enjoy!
+				</span>
 			</span>
 		</ion-title>
 	</ion-navbar>
@@ -36,38 +36,37 @@
 
 <ion-content no-padding text-center>
 	
-	<div *ngIf="!signed && signinMode">
-		<ion-list>
-			<ion-item>
-				<ion-label floating>Email</ion-label>
-				<ion-input type="email" [(ngModel)]="email"></ion-input>
-			</ion-item>
-			<ion-item>
-				<ion-label floating>Password</ion-label>
-				<ion-input type="password" [(ngModel)]="password"></ion-input>
-			</ion-item>
-		</ion-list>
+	<div *ngIf="!signed">
+		<div *ngIf="signinMode">
+			<button ion-button disabled (click)="setMode('signin')">signin</button>
+			<button ion-button small (click)="setMode('signup')">signup</button>
+			<ion-list>
+				<ion-item>
+					<ion-label floating>Email</ion-label>
+					<ion-input type="email" [(ngModel)]="email"></ion-input>
+				</ion-item>
+				<ion-item>
+					<ion-label floating>Password</ion-label>
+					<ion-input type="password" [(ngModel)]="password"></ion-input>
+				</ion-item>
+			</ion-list>
 
-		<div padding>
-			<div *ngIf="(email && password)">
-				<button ion-button block large (click)="signin()">signin</button>
-			</div>
-			<div *ngIf="!(email && password)">
-				<button ion-button block small disabled>signin</button>
+			<div padding>
+				<div *ngIf="(email && password)">
+					<button ion-button block large (click)="signin()">signin</button>
+				</div>
+				<div *ngIf="!(email && password)">
+					<button ion-button block small disabled>signin</button>
+				</div>
 			</div>
 		</div>
-
-	</div>
-	<div *ngIf="!signed && signupMode">
-		<div *ngIf="!signed">
-
+		<div *ngIf="signupMode">
+			<button ion-button small (click)="setMode('signin')">signin</button>
+			<button ion-button disabled (click)="setMode('signup')">signup</button>
 			<div *ngIf="!role">
 
 				<ion-list>
 					<ion-list-header>
-						<h1>
-							Please Choose Your Role:
-						</h1>
 					</ion-list-header>
 					<ion-item>
 						<button ion-button full round large (click)="setRole('student')">student</button>
@@ -115,15 +114,25 @@
 			</div>
 		</div>
 	</div>
-	<div *ngIf="signed && !verified">
-		Please Verify your Email
-	</div>
-	<div *ngIf="signed && verified && !profiled">
-		<button ion-button (click)="navHost()">Host</button>
-		Please Edit Your Profile
-	</div>
-	<div *ngIf="signed && verified && profiled">
-		Thank You Enjoy!
+	<div *ngIf="signed">
+		<ion-row>
+			<ion-col>
+				<button ion-button full (click)="signout()">signout</button>
+			</ion-col>
+			<ion-col>
+				<button ion-button full small (click)="delete()">delete</button>
+			</ion-col>
+		</ion-row>
+		<div *ngIf="!verified">
+			Please Verify your Email
+		</div>
+		<div *ngIf="verified">
+			<button ion-button full large (click)="pageHost()">Host</button>
+			<div *ngIf="verified && !profiled">
+			</div>
+			<div *ngIf="verified && profiled">
+			</div>
+		</div>
 	</div>
 
 </ion-content>

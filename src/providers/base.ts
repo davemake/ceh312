@@ -12,20 +12,7 @@ export class Base {
 	image: any;
 	newImage: any={name: ''};
 
-	host: any;
-	hostObj: any={
-		created: '',
-		updated: '',
-		who: {
-			title: '',
-		},
-		where: {
-			title: '',
-		},
-		what: {
-			title: '',
-		},
-	};
+	status: any;
 
 
 	afa: any;
@@ -33,18 +20,19 @@ export class Base {
 	storage: any;
 	auth: any;
 
-	snap: any;
+	snapshot: any;
 
-	currentUser: any;
-	user: any;
+	userAuth: any;
 	role: any;
 	signed: any;
 	verified: any;
 	profiled: any;
 
+	host: any;
 	student: any;
 	volunteer: any;
 
+	user: FirebaseObjectObservable<any>;
 	users: FirebaseListObservable<any>;
 	hosts: FirebaseListObservable<any>;
 	files: FirebaseListObservable<any>;
@@ -55,7 +43,7 @@ export class Base {
 		public af: AngularFire,
 		public afd: AngularFireDatabase,
 	) {
-		window.this = this;
+		window.thisBase = this;
 		this.afa = this.afd['fbApp'];
 		this.auth = this.afa.auth();
 		this.database = this.afa.database();
@@ -64,57 +52,77 @@ export class Base {
 		this.hosts = this.afd.list("/hosts");
 		this.files = this.afd.list("/files");
 		this.images = this.afd.list("/images");
-		this.auth.onAuthStateChanged( this.userStateChanged );
+		this.auth.onAuthStateChanged( (user)=> {
+			if (user) {
+				let userAuth = window.thisBase.userAuth = JSON.parse(JSON.stringify(user));
+				let path = "users/"+user.uid;
+				window.thisBase.database.ref(path).set(userAuth).then( (data)=> {
+					let userAuth = window.thisBase.userAuth
+					let path = "users/"+userAuth.uid;
+					window.thisBase.database.ref(path).on("value", (data)=> {
+						window.thisBase.user = data.val();
+					});
+				});
+			} else {
+				window.thisBase.userAuth = null;
+				window.thisBase.user = null;
+			}
+			
+		});
     }
 
 	userStateChanged(user) {
 		if (user) {
-			window.this.currentUser = user;
-			window.this.signed = (new Date).getTime();
-			if (user.emailVerified) {
-				window.this.verified = window.this.signed;
-			}
 		}
 	}
 
-	
-	signinUser(email, password) {
-		this.auth.signInWithEmailAndPassword(email, password).catch( (error)=> {
-			// handle errors here.
-			alert(error.code+" "+error.message);
-		});
-	}
-
-	signout() {
-		this.auth.signOut().then( ()=> {
-			// Sign-out successful.
-		}).catch( (error)=> {
-			// An error happened.
-		});
+	userSignout() {
+		this.auth.signOut()
+		.then( console.log("signed out") )
+		.catch( this.catchError );
 	}
 	
 	create(many, one) {
-		this[one] = this.hostObj;
+		let obj = {
+			created: (new Date).getTime(),
+			updated: (new Date).getTime()
+		}
+		this[one] = obj;
 		this[one].created = (new Date()).getTime();
 		this[one].key = this[many].push(this[one]).key;
 		return this[one];
 	}
 
-	read(path, key) {
-		this.database.ref(path+'/'+key).on('value', this.readSnap, this.readSnapError);
-		return this.snap;
+	userSignup(email, password, role) {
+		this.status = "Creating User..."
+		this.role;
+		this.auth.createUserWithEmailAndPassword(email, password)
+		.then( this.userSignupSuccess )
+		.catch( this.catchError );
+	}
+
+	userSignupSuccess(user) {
+		user.sendEmailVerification();
+		let role = window.thisBase.role;
+		window.thisBase[role] = window.thisBase.base[role] = window.thisBase.read(role+"s/"+user.uid);
+	}
+
+	userSignin(email, password) {
+		this.auth.signInWithEmailAndPassword(email, password).then( (obj)=> {
+			return JSON.parse(JSON.stringify(obj));
+		}).catch( this.catchError );
+	}
+	
+	read(path) {
+		window.thisBase.database.ref(path).on('value', window.thisBase.readSnap, window.thisBase.catchError);
+	}
+
+	readSnap(snapshot) {
+		window.thisBase.snapshot = snapshot.val();
 	}
 
 	update(path, key, data) {
 		debugger;
-	}
-
-	readSnap(snapshot) {
-		window.this.snap = snapshot.val();
-	}
-
-	readSnapError(error) {
-		alert(error);
 	}
 
 	refDatabase(path, key) {
@@ -125,26 +133,30 @@ export class Base {
 		return this.storage.ref(path+'/'+key);
 	}
 
+	destroy(dir, key) {
+		this[dir].remove(key);
+	}
+
 	destroyStorage(dir, i) {
 		let ref = this.afa.storage().ref(dir+'/'+i.name);
 		ref.delete();
-		this.destroyData(dir, i);
+		this.destroy(dir, i.$key);
 	}
 
-	destroyData(dir, i) {
-		this[dir].remove(i.$key);
+	destroyUser() {
+		debugger;
 	}
 
-	showImage(i) {
+	imageId(i) {
 		let storageRef = this.storage.ref('images/'+i.name);
 		let key = i.$key;
-		let name = i.name;
+		//let name = i.name;
 		storageRef.getDownloadURL().then( (url)=> {
 			if (document.getElementById(key)) {
 				document.getElementById(key).setAttribute('src', url);
 			};
 		});
-		return "\<img id='"+key+"'\>"
+		return key;
 	}	
 
 	uploadImages() {
@@ -163,7 +175,7 @@ export class Base {
 		let name = this.randomName(file);
 		let obj = {name: name};
 		let storageRef = this.storage.ref(dir+name);
-		let task = storageRef.put(file).then( ()=> {
+		storageRef.put(file).then( ()=> {
 				arr.push(obj);
 		});
 		return obj;
@@ -181,6 +193,12 @@ export class Base {
 		role = parts[parts.length-1].toLowerCase();
 		name = time+name+"."+role
 		return name
+	}
+
+	catchError(error) {
+		console.log(error.code, error.message);
+		window.thisBase.status = error.message;
+		alert(error.message);
 	}
 
 
