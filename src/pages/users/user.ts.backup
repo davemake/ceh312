@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { Platform, Nav, NavParams } from 'ionic-angular';
 import { Base } from "../../providers/base";
-import { Host } from '../hosts/host';
 
 declare let window: any;
 declare let cordova: any;
@@ -14,19 +13,12 @@ declare let cordova: any;
 export class User {
 	
 	user: any;
-	userAuth: any;
-
-	pass: any;
 	role: any;
-	student: any;
 	host: any;
+	student: any;
 	volunteer: any;
 	email: any="davemakena@gmail.com";
 	password: any="entering";
-	status: any;
-	signed: any;
-	verified: any;
-	profiled: any;
 	signinMode: any=(new Date).getTime();
 	signupMode: any;
 
@@ -40,21 +32,10 @@ export class User {
 		this.user = this.base.user;
     }
 
-	pageHost() {
-		this.page(Host);
-	}
-
-	page(obj) {
-		this.nav.setRoot(obj)
-	}
-
 	setMode(mode) {
 		this.signinMode = null;
 		this.signupMode = null;
 		if (mode=="signin") {
-			if (!this.signed) {
-				this.role = null;
-			}
 			this.signinMode = (new Date).getTime();
 		}
 		if (mode=="signup") {
@@ -70,24 +51,38 @@ export class User {
 		let email = this.email;
 		let password = this.password;
 		let role = this.role;
-		this.user = this.base.userSignup(email, password, role);
+		this.base.userSignup(email, password, role);
+		this.watchUser();
 	}
 
 	signin() {
 		let email = this.email;
 		let password = this.password;
 		this.base.userSignin(email, password);
-		this.nav.setRoot(User);
+		this.watchUser();
 	}
 
 	signout() {
-		this.user = this.base.userSignout();
+		this.base.userSignout();
+		this.watchUser();
 	}
 
 	destroy() {
-		this.user = this.base.destroyUser();
+		this.base.userDestroy();
+		setTimeout( ()=>{
+			this.watchUser();
+		}, 10);
 	}
 	
-
+	watchUser() {
+		let user = this.user;
+		let watch = setInterval( ()=>{
+			this.user = this.base.user;
+			console.log("watching...");
+			if (user!=this.user) {
+				clearInterval(watch);
+			}
+		}, 100);
+	}
 
 }

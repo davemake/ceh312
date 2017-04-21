@@ -1,11 +1,13 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
-import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
+import { IonicApp, IonicErrorHandler, IonicModule, IonicPageModule } from 'ionic-angular';
 
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { ListPage } from '../pages/list/list';
-import { User } from '../pages/users/user';
+
+import { UserPage } from '../pages/user/user';
+
 import { Hosts } from '../pages/hosts/hosts';
 import { Host } from '../pages/hosts/host';
 
@@ -31,9 +33,7 @@ const fbconfig = {
 @NgModule({
   declarations: [
     MyApp,
-    HomePage,
-    ListPage,
-    User,
+    UserPage,
     Hosts,
     Host
   ],
@@ -45,9 +45,7 @@ const fbconfig = {
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    HomePage,
-    ListPage,
-    User,
+    UserPage,
     Hosts,
     Host
   ],

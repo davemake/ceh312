@@ -22,19 +22,25 @@ export class Base {
 
 	snapshot: any;
 
-	userAuth: any;
 	role: any;
 	signed: any;
 	verified: any;
 	profiled: any;
 
+	passAuth: any;
+	userAuth: any;
+	user: any;
+
 	host: any;
 	student: any;
 	volunteer: any;
 
-	user: FirebaseObjectObservable<any>;
 	users: FirebaseListObservable<any>;
 	hosts: FirebaseListObservable<any>;
+	students: FirebaseListObservable<any>;
+	volunteers: FirebaseListObservable<any>;
+	owners: FirebaseListObservable<any>;
+	agents: FirebaseListObservable<any>;
 	files: FirebaseListObservable<any>;
 	images: FirebaseListObservable<any>;
 
@@ -50,36 +56,106 @@ export class Base {
 		this.storage = this.afa.storage();
 		this.users = this.afd.list("/users");
 		this.hosts = this.afd.list("/hosts");
+		this.students = this.afd.list("/students");
+		this.volunteers = this.afd.list("/volunteers");
 		this.files = this.afd.list("/files");
 		this.images = this.afd.list("/images");
-		this.auth.onAuthStateChanged( (user)=> {
-			if (user) {
-				let userAuth = window.thisBase.userAuth = JSON.parse(JSON.stringify(user));
-				let path = "users/"+user.uid;
-				window.thisBase.database.ref(path).set(userAuth).then( (data)=> {
-					let userAuth = window.thisBase.userAuth
-					let path = "users/"+userAuth.uid;
-					window.thisBase.database.ref(path).on("value", (data)=> {
-						window.thisBase.user = data.val();
+		this.auth.onAuthStateChanged( this.userChanged );
+    }
+	
+	userChanged(passAuth) {
+		window.thisBase.passAuth = passAuth;
+		if (passAuth) {
+			let userAuth = window.thisBase.userAuth = JSON.parse(JSON.stringify(passAuth));
+			let path = "users/"+window.thisBase.userAuth.uid+"/email";
+			let data = window.thisBase.userAuth.email;
+			window.thisBase.database.ref(path).set(data).then( ()=>{
+				let path = "users/"+window.thisBase.userAuth.uid+"/emailVerified";
+				let data = window.thisBase.userAuth.emailVerified;
+				window.thisBase.database.ref(path).set(data).then( ()=>{
+					let path = "users/"+window.thisBase.userAuth.uid+"/isAnonymous";
+					let data = window.thisBase.userAuth.isAnonymous
+					window.thisBase.database.ref(path).set(data).then( ()=>{
+						let path = "users/"+window.thisBase.userAuth.uid+"/uid";
+						let data = window.thisBase.userAuth.uid
+						window.thisBase.database.ref(path).set(data).then( ()=>{
+							let path = "users/"+window.thisBase.userAuth.uid;
+							window.thisBase.database.ref(path).on("value", (data)=> {
+								window.thisBase.user = data.val();
+							});
+						});
 					});
 				});
-			} else {
-				window.thisBase.userAuth = null;
-				window.thisBase.user = null;
-			}
-			
-		});
-    }
-
-	userStateChanged(user) {
-		if (user) {
+			});
+		} else {
+			window.thisBase.passAuth = null;
+			window.thisBase.userAuth = null;
+			window.thisBase.user = null;
 		}
 	}
 
+	userSignup(email, password, role) {
+		this.role = role;
+		this.auth.createUserWithEmailAndPassword(email, password).then( (auth)=>{
+			auth.sendEmailVerification();
+			window.thisBase.userAuth = JSON.parse(JSON.stringify(auth));
+			let path = "users/"+window.thisBase.userAuth.uid+"/created";
+			let data = (new Date).getTime();
+			window.thisBase.database.ref(path).set(data).then( ()=>{
+				let path = "users/"+window.thisBase.userAuth.uid+"/role";
+				let data = window.thisBase.role;
+				window.thisBase.database.ref(path).set(data).then( ()=>{
+					let path = "users/"+window.thisBase.userAuth.uid;
+					window.thisBase.database.ref(path).on("value", (data)=> {
+						window.thisBase.user = data.val();
+						let role = window.thisBase.role;
+						let path = role+"s/"+window.thisBase.userAuth.uid;
+						window.thisBase[role] = window.thisBase[role] = window.thisBase.database.ref(path).set({created: (new Date).getTime()});
+					});
+				});
+			});
+		}).catch( this.catchError );
+	}
+
+	userSignin(email, password) {
+		this.auth.signInWithEmailAndPassword(email, password).catch( this.catchError );
+	}
+
 	userSignout() {
-		this.auth.signOut()
-		.then( console.log("signed out") )
-		.catch( this.catchError );
+		this.auth.signOut().then( ()=>{
+			console.log("signed out");
+			window.thisBase.user = null;
+			window.thisBase.userAuth = null;
+		}).catch( this.catchError );
+	}
+
+	userDestroy() {
+		let user = this.user;
+		if (user) {
+			this.role = user.role;
+			this.passAuth.delete().then( ()=>{
+				let id = window.thisBase.userAuth.uid;
+				let role = window.thisBase.role;
+				switch (role) {
+					case "host":
+						setTimeout( ()=>{ 
+							window.thisBase.hosts.remove(id);
+						}, 100);
+						break;
+					case "student":
+						setTimeout( ()=>{ 
+							window.thisBase.students.remove(id);
+						}, 100);
+						break;
+					case "volunteer":
+						setTimeout( ()=>{ 
+							window.thisBase.volunteers.remove(id);
+						}, 100);
+						break;
+				}
+				window.thisBase.users.remove(id);
+			}).catch( this.catchError );
+		}
 	}
 	
 	create(many, one) {
@@ -91,26 +167,6 @@ export class Base {
 		this[one].created = (new Date()).getTime();
 		this[one].key = this[many].push(this[one]).key;
 		return this[one];
-	}
-
-	userSignup(email, password, role) {
-		this.status = "Creating User..."
-		this.role;
-		this.auth.createUserWithEmailAndPassword(email, password)
-		.then( this.userSignupSuccess )
-		.catch( this.catchError );
-	}
-
-	userSignupSuccess(user) {
-		user.sendEmailVerification();
-		let role = window.thisBase.role;
-		window.thisBase[role] = window.thisBase.base[role] = window.thisBase.read(role+"s/"+user.uid);
-	}
-
-	userSignin(email, password) {
-		this.auth.signInWithEmailAndPassword(email, password).then( (obj)=> {
-			return JSON.parse(JSON.stringify(obj));
-		}).catch( this.catchError );
 	}
 	
 	read(path) {
@@ -141,10 +197,6 @@ export class Base {
 		let ref = this.afa.storage().ref(dir+'/'+i.name);
 		ref.delete();
 		this.destroy(dir, i.$key);
-	}
-
-	destroyUser() {
-		debugger;
 	}
 
 	imageId(i) {

@@ -5,9 +5,9 @@
 		</button>
 		<ion-title text-wrap>
 			<span *ngIf="user">
-				<span>
-					User!
-					{{user.email}}
+				SIGNED-IN: {{user.email}}
+				<span *ngIf="user.emailVerified">
+					(verified)
 				</span>
 			</span>
 			<span *ngIf="!user">
@@ -18,26 +18,26 @@
 					Please Signup
 				</span>
 			</span>
-			<span *ngIf="signed">
-				{{user.email}}
-				<span *ngIf="!verified">
-					Please Verify your Email
-				</span>
-				<span *ngIf="verified && !profiled">
-					Please Update Your Profile
-				</span>
-				<span *ngIf="verified && profiled">
-					Please Enjoy!
-				</span>
-			</span>
 		</ion-title>
 	</ion-navbar>
 </ion-header>
 
 <ion-content no-padding text-center>
 	
-	<div *ngIf="!signed">
+	<div *ngIf="user">
+		Email: {{user.email}}
+		<div *ngIf="user.emailVerified">
+			Verified: YES
+		</div>
+		<div *ngIf="!user.emailVerified">
+			Verified: NO
+		</div>
+		<button ion-button (click)="signout()">logout</button>
+		<button ion-button (click)="destroy()">destroy</button>
+	</div>
+	<div *ngIf="!user">
 		<div *ngIf="signinMode">
+			
 			<button ion-button disabled (click)="setMode('signin')">signin</button>
 			<button ion-button small (click)="setMode('signup')">signup</button>
 			<ion-list>
@@ -61,6 +61,7 @@
 			</div>
 		</div>
 		<div *ngIf="signupMode">
+			
 			<button ion-button small (click)="setMode('signin')">signin</button>
 			<button ion-button disabled (click)="setMode('signup')">signup</button>
 			<div *ngIf="!role">
@@ -111,26 +112,6 @@
 					</div>
 				</div>
 
-			</div>
-		</div>
-	</div>
-	<div *ngIf="signed">
-		<ion-row>
-			<ion-col>
-				<button ion-button full (click)="signout()">signout</button>
-			</ion-col>
-			<ion-col>
-				<button ion-button full small (click)="delete()">delete</button>
-			</ion-col>
-		</ion-row>
-		<div *ngIf="!verified">
-			Please Verify your Email
-		</div>
-		<div *ngIf="verified">
-			<button ion-button full large (click)="pageHost()">Host</button>
-			<div *ngIf="verified && !profiled">
-			</div>
-			<div *ngIf="verified && profiled">
 			</div>
 		</div>
 	</div>

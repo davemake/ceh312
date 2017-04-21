@@ -11,7 +11,7 @@
 
 <ion-content padding>
 
-	<input type="file" (change)="upload()" multiple><br>
+	<!--input type="file" (change)="upload()" multiple><br>
 
 	<ion-list *ngIf="!host">
 		<ion-item *ngFor="let h of hosts | async" (click)="hostPage(h.$key)">
@@ -23,6 +23,6 @@
 		{{imageId(i)}}<br>
 		<button ion-button (click)="read(i.$key)">Read</button>
 		<button ion-button (click)="destroyImage(i)">Delete</button>
-	</ion-item>
+	</ion-item-->
 
 </ion-content>
