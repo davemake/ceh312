@@ -20,36 +20,30 @@
 
 
 <ion-content padding>
-			<ion-list *ngIf="!reset_code_sent">
-				<ion-list-header text-center>
-					Reset Your Password
-				</ion-list-header>
-				<ion-item>
-					<ion-label floating>Email</ion-label>
-					<ion-input placeholder="(enter your email address here)" type="email" [(ngModel)]="email"></ion-input>
-				</ion-item>
-				<ion-item>
-					<div *ngIf="email">
-						<button ion-button full round large (click)="send_reset_code()">email password-reset-code</button>
-					</div>
-				</ion-item>
-			</ion-list>
-			<ion-list *ngIf="reset_code_sent">
-				<ion-item>
-					<ion-label floating>My Reset Code</ion-label>
-					<ion-input type="text" [(ngModel)]="reset_code"></ion-input>
-				</ion-item>
-				<ion-item>
-					<ion-label floating>My New Password</ion-label>
-					<ion-input type="password" [(ngModel)]="password"></ion-input>
-				</ion-item>
-				<ion-item>
-					<div *ngIf="!(reset_code && password)">
-						<button ion-button full disabled (click)="send_reset_code()">send reset code</button>
-					</div>
-					<div *ngIf="(reset_code && password)">
-						<button ion-button full large (click)="send_reset_code()">send reset code</button>
-					</div>
-				</ion-item>
-			</ion-list>
+
+	<ion-list>
+		<ion-list-header text-center>
+			<h1>Reset Your Password</h1>
+		</ion-list-header>
+		<ion-item>
+			<ion-label floating>Email</ion-label>
+			<ion-input placeholder="Please enter your email address" type="email" [(ngModel)]="email"></ion-input>
+		</ion-item>
+		<ion-item *ngIf="email">
+			<span *ngIf="sent_to!=email">
+				<button ion-button full round large (click)="send_password_reset()">email password-reset-link</button>
+			</span>
+			<span *ngIf="sent_to==email">
+				<button ion-button full round large disabled>email password-reset-link</button>
+			</span>
+		</ion-item>
+		<ion-item *ngIf="sent_at && sent_to" text-center text-wrap>
+			PASSWORD-RESET-LINK SENT<br>
+			PLEASE CHECK YOUR EMAIL<br>
+			SENT TO: {{sent_to}}<br>
+			SENT AT: {{sent_at}}<br>
+			THANK YOU!
+		</ion-item>
+	</ion-list>
+
 </ion-content>

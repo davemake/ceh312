@@ -11,7 +11,12 @@
 						<ion-icon name="menu"></ion-icon>
 				</button>
 				<ion-title text-capitalize>
-						status
+						<span *ngIf="user">
+							{{user.email}}
+						</span>
+						<span *ngIf="user && user.emailVerified">
+							email-verified
+						</span>
 				</ion-title>
 		</ion-navbar>
 </ion-header>

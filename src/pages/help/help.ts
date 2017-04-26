@@ -17,8 +17,8 @@ export class HelpPage {
 
   email: any = "davemakena@gmail.com";
   password: any;
-  reset_code: any;
-  sent_reset_code: any;
+  sent_to: any;
+  sent_at: any;
 
   constructor(
 		public nav: Nav,
@@ -29,10 +29,12 @@ export class HelpPage {
   }
 
   // https://firebase.google.com/docs/reference/js/firebase.auth.Auth#sendPasswordResetEmail
-  send_reset_code() {
+  send_password_reset() {
     let email = this.email;
     this.base.auth.sendPasswordResetEmail(email).then( ()=>{
-      debugger;
+      console.log("password reset link sent to ", email);
+      this.sent_to = email;
+      this.sent_at = (new Date);
     }).catch( this.base.catchError );
   }
 
