@@ -26,6 +26,9 @@
 		<ion-item>
 			<button ion-button full block large (click)="setMode('password')">update password</button>
 		</ion-item>
+		<ion-item>
+			<button ion-button full block large (click)="setMode('destroy')">destroy user</button>
+		</ion-item>
 	</ion-list>
 
 	<ion-list *ngIf="mode=='email'">
@@ -81,9 +84,18 @@
 
 	</ion-list>
 
-	<ion-list *ngIf="mode">
+	<ion-list *ngIf="mode=='destroy'">
+		<ion-list-header text-center>
+			<h1>Destroy User</h1>
+		</ion-list-header>
 		<ion-item>
-			<button ion-button full block large (click)="setMode('')">cancel</button>
+			<button ion-button full round large (click)="destroy_user()">destroy user</button>
+		</ion-item>
+	</ion-list>
+
+	<ion-list *ngIf="mode">
+		<ion-item text-center>
+			<button ion-button block large (click)="setMode('')">cancel</button>
 		</ion-item>
 	</ion-list>
 

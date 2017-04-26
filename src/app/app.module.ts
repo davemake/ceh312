@@ -7,29 +7,15 @@ import { MyApp } from './app.component';
 //import { ListPage } from '../pages/list/list';
 
 import { UserPage } from '../pages/user/user';
-/*
-import { SignupPage } from '../pages/signup/signup';
-import { SignoutPage } from '../pages/signout/signout';
-import { SigninPage } from '../pages/signin/signin';
-import { StatusPage } from '../pages/status/status';
-import { HelpPage } from '../pages/help/help';
-    SignupPage,
-    SignoutPage,
-    SigninPage,
-    StatusPage,
-    HelpPage,
-*/
-
 import { Hosts } from '../pages/hosts/hosts';
 import { Host } from '../pages/hosts/host';
 
 import { Base } from "../providers/base";
 
-// npm install firebase angularfire2 --save
 import { AngularFireModule } from 'angularfire2'
+// npm install firebase angularfire2 --save
 // npm install @ionic-native/text-to-speech --save
 //import { TextToSpeech } from '@ionic-native/text-to-speech';
-
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 

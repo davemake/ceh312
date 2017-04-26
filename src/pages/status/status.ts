@@ -28,6 +28,7 @@ export class StatusPage {
 		public nav: Nav,
   ) {
 		this.user = this.base.user;
+		this.role = this.user.role;
   }
 
   ionViewDidLoad() {

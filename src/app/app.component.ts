@@ -7,6 +7,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 //import { ListPage } from '../pages/list/list';
 import { UserPage } from '../pages/user/user';
 import { Hosts } from '../pages/hosts/hosts';
+import { Host } from '../pages/hosts/host';
 
 import { Base } from '../providers/base';
 
@@ -20,6 +21,8 @@ export class MyApp {
 
   pages: Array<{title: string, component: any}>;
 
+  user: any;
+
   constructor(
     public platform: Platform, 
     public statusBar: StatusBar, 
@@ -27,9 +30,8 @@ export class MyApp {
     public base: Base
   ) {
     this.initializeApp();
-
+    this.user = this.base.user;
     // used for an example of ngFor and navigation
-
     this.pages = [
       { title: 'User', component: UserPage }
     ];
@@ -50,4 +52,5 @@ export class MyApp {
     // we wouldn't want the back button to show in this scenario
     this.nav.setRoot(page.component);
   }
+
 }

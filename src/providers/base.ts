@@ -97,23 +97,23 @@ export class Base {
 	userSignup(email, password, role) {
 		this.role = role;
 		this.auth.createUserWithEmailAndPassword(email, password).then( (auth)=>{
-			auth.sendEmailVerification();
-			window.thisBase.userAuth = JSON.parse(JSON.stringify(auth));
-			let path = "users/"+window.thisBase.userAuth.uid+"/created";
-			let data = (new Date).getTime();
-			window.thisBase.database.ref(path).set(data).then( ()=>{
+				auth.sendEmailVerification();
+				window.thisBase.userAuth = JSON.parse(JSON.stringify(auth));
+				let path = "users/"+window.thisBase.userAuth.uid+"/created";
+				let data = (new Date).getTime();
+		window.thisBase.database.ref(path).set(data).then( ()=>{
 				let path = "users/"+window.thisBase.userAuth.uid+"/role";
 				let data = window.thisBase.role;
-				window.thisBase.database.ref(path).set(data).then( ()=>{
-					let path = "users/"+window.thisBase.userAuth.uid;
-					window.thisBase.database.ref(path).on("value", (data)=> {
-						window.thisBase.user = data.val();
-						let role = window.thisBase.role;
-						let path = role+"s/"+window.thisBase.userAuth.uid;
-						window.thisBase[role] = window.thisBase[role] = window.thisBase.database.ref(path).set({created: (new Date).getTime()});
-					});
-				});
-			});
+		window.thisBase.database.ref(path).set(data).then( ()=>{
+				let path = "users/"+window.thisBase.userAuth.uid;
+		window.thisBase.database.ref(path).on("value", (data)=> {
+				window.thisBase.user = data.val();
+				let role = window.thisBase.role;
+				let path = role+"s/"+window.thisBase.userAuth.uid;
+		window.thisBase[role] = window.thisBase.database.ref(path).set({created: (new Date).getTime()});
+		});
+		});
+		});
 		}).catch( this.catchError );
 	}
 
@@ -135,8 +135,8 @@ export class Base {
 			this.role = user.role;
 			this.passAuth.delete().then( ()=>{
 				let id = window.thisBase.userAuth.uid;
-				let role = window.thisBase.role;
-				switch (role) {
+				window.thisBase.users.remove(id);
+				switch (window.thisBase.role) {
 					case "host":
 						setTimeout( ()=>{ 
 							window.thisBase.hosts.remove(id);
@@ -153,7 +153,9 @@ export class Base {
 						}, 100);
 						break;
 				}
-				window.thisBase.users.remove(id);
+				console.log("user destroyed");
+				window.thisBase.user = null;
+				window.thisBase.userAuth = null;
 			}).catch( this.catchError );
 		}
 	}

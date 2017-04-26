@@ -58,6 +58,14 @@ export class SettingsPage {
     }).catch( this.base.catchError );
   }
 
+  destroy_user() {
+    let confirmed = prompt("Permanently Destroy User? Type the word 'destroy' and press OK to continue:");
+    if ( confirmed=="destroy" ) {
+      this.base.userDestroy();
+      this.base.watchUser(this.nav);
+    }
+  }
+
   ionViewDidLoad() {
     console.log('ionViewDidLoad SettingsPage');
   }
