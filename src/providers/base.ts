@@ -47,7 +47,7 @@ export class Base {
 	constructor(
 		public platform: Platform,
 		public af: AngularFire,
-		public afd: AngularFireDatabase,
+		public afd: AngularFireDatabase
 	) {
 		window.thisBase = this;
 		this.afa = this.afd['fbApp'];
@@ -251,6 +251,19 @@ export class Base {
 		alert(error.message);
 		console.log(error.code, error.message);
 		window.thisBase.status = error.message;
+	}
+	
+	watchUser(nav) {
+		let i = 300;
+		let user = this.user;
+		let myTimer = setInterval( ()=>{
+			console.log(i--);
+			if ( i<0 || (user!=this.user && typeof(this.user)==='object') ) {
+				console.log(this.user);
+				clearInterval(myTimer);
+				nav.setRoot(nav.root);
+			}
+		}, 100);
 	}
 
 

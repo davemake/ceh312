@@ -18,5 +18,7 @@
 
 
 <ion-content padding>
-
+		<div *ngIf="user">
+			<button ion-button full round large (click)="signout()">signout</button>
+		</div>
 </ion-content>

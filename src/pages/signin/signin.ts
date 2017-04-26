@@ -26,10 +26,10 @@ export class SigninPage {
 	userPage: any=UserPage;
 
   constructor(
-		public nav: Nav, 
 		public params: NavParams,
-		public platform: Platform, 
+		public platform: Platform,
 		public base: Base,
+		public nav: Nav,
   ) {
 		this.user = this.base.user;
   }
@@ -39,19 +39,7 @@ export class SigninPage {
 		let password = this.password;
 		this.base.user = null;
 		this.base.userSignin(email, password);
-		this.watchUser();
-	}
-	
-	watchUser() {
-		let i = 300;
-		let myTimer = setInterval( ()=>{
-			console.log(i--);
-			if ( i<0 || (this.base.user!=null && typeof(this.base.user)==='object') ) {
-				console.log(this.user = this.base.user);
-				clearInterval(myTimer);
-				this.nav.setRoot(this.userPage);
-			}
-		}, 100);
+		this.base.watchUser(this.nav);
 	}
 
   ionViewDidLoad() {
