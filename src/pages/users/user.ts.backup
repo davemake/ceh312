@@ -43,18 +43,6 @@ export class User {
 		}
 	}
 
-	setRole(role) {
-		this.role = role;
-	}
-
-	signup() {
-		let email = this.email;
-		let password = this.password;
-		let role = this.role;
-		this.base.userSignup(email, password, role);
-		this.watchUser();
-	}
-
 	signin() {
 		let email = this.email;
 		let password = this.password;

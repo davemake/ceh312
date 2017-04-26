@@ -4,15 +4,63 @@
   See http://ionicframework.com/docs/components/#navigation for more info on
   Ionic pages and navigation.
 -->
+
 <ion-header>
-
-  <ion-navbar>
-    <ion-title>signup</ion-title>
-  </ion-navbar>
-
+		<ion-navbar>
+				<ion-title text-capitalize>
+						signup
+				</ion-title>
+		</ion-navbar>
 </ion-header>
 
 
 <ion-content padding>
 
+			<div *ngIf="!role">
+
+				<ion-list>
+					<ion-list-header>
+					</ion-list-header>
+					<ion-item>
+						<button ion-button full round large (click)="setRole('student')">student</button>
+					</ion-item>
+					<ion-item>
+						<button ion-button full round large (click)="setRole('host')">host family</button>
+					</ion-item>
+					<ion-item>
+						<button ion-button full round large (click)="setRole('volunteer')">volunteer</button>
+					</ion-item>
+				</ion-list>
+
+			</div>
+
+			<div *ngIf="role">
+
+				<ion-list>
+					<ion-list-header>
+						<h1 text-uppercase>
+							{{role}}
+						</h1>
+						<h2>
+							Please Enter Your Email & Password:
+						</h2>
+					</ion-list-header>
+					<ion-item>
+						<ion-label floating>Email</ion-label>
+						<ion-input type="email" [(ngModel)]="email"></ion-input>
+					</ion-item>
+					<ion-item>
+						<ion-label floating>Password</ion-label>
+						<ion-input type="password" [(ngModel)]="password"></ion-input>
+					</ion-item>
+				</ion-list>
+		
+				<div *ngIf="(email && password)">
+					<button ion-button full round large (click)="signup()">signup</button>
+				</div>
+				<div *ngIf="!(email && password)">
+					<button ion-button full round small disabled>signup</button>
+				</div>
+
+			</div>
 </ion-content>

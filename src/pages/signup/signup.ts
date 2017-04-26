@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, Platform, Nav, NavParams } from 'ionic-angular';
+import { Base } from "../../providers/base";
 
 /**
  * Generated class for the SignupPage page.
@@ -14,11 +15,49 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class SignupPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+	user: any;
+	role: any;
+	host: any;
+	student: any;
+	volunteer: any;
+	email: any="davemakena@gmail.com";
+	password: any="entering";
+
+  constructor(
+		public nav: Nav, 
+		public params: NavParams,
+		public platform: Platform, 
+		public base: Base
+  ) {
+		this.user = this.base.user;
   }
+
+	setRole(role) {
+		this.role = role;
+	}
+
+	signup() {
+		let email = this.email;
+		let password = this.password;
+		let role = this.role;
+		this.base.userSignup(email, password, role);
+		this.watchUser();
+	}
+	
+	watchUser() {
+		let user = this.user;
+		let watch = setInterval( ()=>{
+			console.log("watching...");
+			if (user!=this.base.user) {
+			  this.user = this.base.user;
+				clearInterval(watch);
+			}
+		}, 100);
+	}
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad SignupPage');
   }
 
+	
 }

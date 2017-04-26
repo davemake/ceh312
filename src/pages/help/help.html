@@ -4,15 +4,52 @@
   See http://ionicframework.com/docs/components/#navigation for more info on
   Ionic pages and navigation.
 -->
+
 <ion-header>
-
-  <ion-navbar>
-    <ion-title>help</ion-title>
-  </ion-navbar>
-
+		<ion-navbar>
+			<div *ngIf="user">
+				<button ion-button menuToggle>
+						<ion-icon name="menu"></ion-icon>
+				</button>
+			</div>
+			<ion-title text-capitalize>
+					help
+			</ion-title>
+		</ion-navbar>
 </ion-header>
 
 
 <ion-content padding>
-
+			<ion-list *ngIf="!reset_code_sent">
+				<ion-list-header text-center>
+					Reset Your Password
+				</ion-list-header>
+				<ion-item>
+					<ion-label floating>Email</ion-label>
+					<ion-input placeholder="(enter your email address here)" type="email" [(ngModel)]="email"></ion-input>
+				</ion-item>
+				<ion-item>
+					<div *ngIf="email">
+						<button ion-button full round large (click)="send_reset_code()">email password-reset-code</button>
+					</div>
+				</ion-item>
+			</ion-list>
+			<ion-list *ngIf="reset_code_sent">
+				<ion-item>
+					<ion-label floating>My Reset Code</ion-label>
+					<ion-input type="text" [(ngModel)]="reset_code"></ion-input>
+				</ion-item>
+				<ion-item>
+					<ion-label floating>My New Password</ion-label>
+					<ion-input type="password" [(ngModel)]="password"></ion-input>
+				</ion-item>
+				<ion-item>
+					<div *ngIf="!(reset_code && password)">
+						<button ion-button full disabled (click)="send_reset_code()">send reset code</button>
+					</div>
+					<div *ngIf="(reset_code && password)">
+						<button ion-button full large (click)="send_reset_code()">send reset code</button>
+					</div>
+				</ion-item>
+			</ion-list>
 </ion-content>

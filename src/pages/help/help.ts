@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, Platform, Nav, NavParams } from 'ionic-angular';
+import { Base } from "../../providers/base";
 
 /**
  * Generated class for the HelpPage page.
@@ -14,7 +15,25 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class HelpPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  email: any = "davemakena@gmail.com";
+  password: any;
+  reset_code: any;
+  sent_reset_code: any;
+
+  constructor(
+		public nav: Nav,
+		public params: NavParams,
+		public platform: Platform, 
+		public base: Base
+  ) {
+  }
+
+  // https://firebase.google.com/docs/reference/js/firebase.auth.Auth#sendPasswordResetEmail
+  send_reset_code() {
+    let email = this.email;
+    this.base.auth.sendPasswordResetEmail(email).then( ()=>{
+      debugger;
+    }).catch( this.base.catchError );
   }
 
   ionViewDidLoad() {

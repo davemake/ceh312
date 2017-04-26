@@ -248,9 +248,9 @@ export class Base {
 	}
 
 	catchError(error) {
+		alert(error.message);
 		console.log(error.code, error.message);
 		window.thisBase.status = error.message;
-		alert(error.message);
 	}
 
 
