@@ -37,13 +37,13 @@
 				<button ion-button full round large disabled>email password-reset-link</button>
 			</span>
 		</ion-item>
-		<ion-item *ngIf="sent_at && sent_to" text-center text-wrap>
+		<ion-list-header *ngIf="sent_at && sent_to" text-center text-wrap>
 			PASSWORD-RESET-LINK SENT<br>
 			PLEASE CHECK YOUR EMAIL<br>
 			SENT TO: {{sent_to}}<br>
 			SENT AT: {{sent_at}}<br>
 			THANK YOU!
-		</ion-item>
+		</ion-list-header>
 	</ion-list>
 
 </ion-content>

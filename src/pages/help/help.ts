@@ -16,6 +16,7 @@ import { Base } from "../../providers/base";
 export class HelpPage {
 
   email: any = "davemakena@gmail.com";
+  newEmail: any;
   password: any;
   sent_to: any;
   sent_at: any;

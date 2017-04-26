@@ -19,4 +19,72 @@
 
 <ion-content padding>
 
+	<ion-list *ngIf="!mode">
+		<ion-item>
+			<button ion-button full block large (click)="setMode('email')">update email address</button>
+		</ion-item>
+		<ion-item>
+			<button ion-button full block large (click)="setMode('password')">update password</button>
+		</ion-item>
+	</ion-list>
+
+	<ion-list *ngIf="mode=='email'">
+
+		<ion-list-header text-center>
+			<h1>Update Your Email Address</h1>
+		</ion-list-header>
+		<ion-item>
+			<ion-label floating>New Email</ion-label>
+			<ion-input type="email" [(ngModel)]="newEmail"></ion-input>
+		</ion-item>
+		<ion-item *ngIf="!newEmail">
+			<button ion-button full round large disabled>update email</button>
+		</ion-item>
+		<ion-item *ngIf="newEmail">
+			<span *ngIf="sent_to!=newEmail">
+				<button ion-button full round large (click)="update_email()">update email</button>
+			</span>
+			<span *ngIf="sent_to==newEmail">
+				<button ion-button full round large disabled>email updated!</button>
+			</span>
+		</ion-item>
+		<ion-list-header *ngIf="sent_at && sent_to==newEmail" text-center text-wrap>
+			EMAIL UPDATED<br>
+			PLEASE CHECK YOUR EMAIL FOR VERIFY-YOUR-EMAIL LINK<br>
+			SENT TO: {{sent_to}}<br>
+			SENT AT: {{sent_at}}<br>
+			THANK YOU!
+		</ion-list-header>
+
+	</ion-list>
+
+	<ion-list *ngIf="mode=='password'">
+
+		<ion-list-header text-center>
+			<h1>Update Your Password</h1>
+		</ion-list-header>
+		<ion-item>
+			<span *ngIf="sent_to!=email">
+				<button ion-button full round large (click)="send_password_reset()">email password-reset-link</button>
+			</span>
+			<span *ngIf="sent_to==email">
+				<button ion-button full round large disabled>password-reset-link emailed!</button>
+			</span>
+		</ion-item>
+		<ion-list-header *ngIf="sent_to==email && sent_at && sent_to" text-center text-wrap>
+			PASSWORD-RESET-LINK SENT<br>
+			PLEASE CHECK YOUR EMAIL<br>
+			SENT TO: {{sent_to}}<br>
+			SENT AT: {{sent_at}}<br>
+			THANK YOU!
+		</ion-list-header>
+
+	</ion-list>
+
+	<ion-list *ngIf="mode">
+		<ion-item>
+			<button ion-button full block large (click)="setMode('')">cancel</button>
+		</ion-item>
+	</ion-list>
+
 </ion-content>
