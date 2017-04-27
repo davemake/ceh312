@@ -22,7 +22,15 @@
 		</ion-item>
 	</ion-list>
 
-	<ion-list *ngIf="mode=='new'">
+	<ion-list *ngIf="mode=='create'">
+    <div *ngIf="!files">
+      <ion-list-header text-center text-uppercase>
+        please upload files
+      </ion-list-header>
+      <ion-item>
+        
+      </ion-item>
+    </div>
 	</ion-list>
 
 	<ion-list *ngIf="mode">

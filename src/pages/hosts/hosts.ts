@@ -19,6 +19,10 @@ export class HostsPage {
   mode: any;
   item: any;
   items: any;
+  files: any;
+  host_family_name: any;
+  county: any;
+  city: any;
 
   constructor(
 		public nav: Nav, 
@@ -31,7 +35,13 @@ export class HostsPage {
   }
 
   create() {
-    this.mode = "new";
+    let mode = this.mode = "create";
+    let key = this.user.uid;
+    this.item = this.base.create("users/"+key+"/hosts");
+  }
+
+  upload() {
+
   }
 
   cancel() {

@@ -34,6 +34,7 @@ export class Base {
 	volunteer: any;
 
 	users: FirebaseListObservable<any>;
+	logs: FirebaseListObservable<any>;
 	hosts: FirebaseListObservable<any>;
 	students: FirebaseListObservable<any>;
 	volunteers: FirebaseListObservable<any>;
@@ -53,6 +54,7 @@ export class Base {
 		this.database = this.afa.database();
 		this.storage = this.afa.storage();
 		this.users = this.afd.list("/users");
+		this.logs = this.afd.list("/users");
 		this.hosts = this.afd.list("/hosts");
 		this.students = this.afd.list("/students");
 		this.volunteers = this.afd.list("/volunteers");
@@ -61,6 +63,18 @@ export class Base {
 		this.images = this.afd.list("/images");
 		this.auth.onAuthStateChanged( this.userChanged );
     }
+
+	log(path, action) {
+		let user = this.user;
+		if (user) {
+
+		}
+		// transfer path
+		// transfer mode
+		// transfer memo
+		// get location
+		// get time
+	}
 	
 	userChanged(passAuth) {
 		window.thisBase.passAuth = passAuth;
@@ -165,19 +179,24 @@ export class Base {
 		}
 	}
 	
-	create(many, one) {
+	create(path) {
+		let objs = this.afd.list(path);
 		let obj = {
 			created: (new Date).getTime(),
-			updated: (new Date).getTime()
-		}
-		this[one] = obj;
-		this[one].created = (new Date()).getTime();
-		this[one].key = this[many].push(this[one]).key;
-		return this[one];
+			key: '',
+			path: ''
+		};
+		obj.key = objs.push(obj).key;
+		obj.path = path+"/"+obj.key;
+    	this.log(obj.path, "create");
+		this.database.ref(obj.path).set(obj).catch( this.catchError );
+		return obj;
 	}
 	
 	read(path) {
+		window.thisBase.snapshot = null;
 		window.thisBase.database.ref(path).on('value', window.thisBase.readSnap, window.thisBase.catchError);
+		return window.thisBase.snapshot;
 	}
 
 	readSnap(snapshot) {
