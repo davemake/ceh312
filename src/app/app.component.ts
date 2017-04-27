@@ -7,7 +7,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 //import { ListPage } from '../pages/list/list';
 import { UserPage } from '../pages/user/user';
 import { TasksPage } from '../pages/tasks/tasks';
-import { HostPage } from '../pages/host/host';
+import { HostsPage } from '../pages/hosts/hosts';
 
 import { Base } from '../providers/base';
 
