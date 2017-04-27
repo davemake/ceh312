@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, Platform, Nav, NavParams } from 'ionic-angular';
+import { TasksPage } from "../tasks/tasks";
 import { HostPage } from "../host/host";
 import { Base } from "../../providers/base";
 /**
@@ -33,6 +34,10 @@ export class StatusPage {
 		this.role = this.user.role;
 		this.email = this.user.email;
   }
+
+	linkTasks() {
+		this.nav.setRoot(TasksPage);
+	}
 
 	linkRole() {
 		switch (this.role) {

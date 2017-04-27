@@ -7,6 +7,7 @@ import { MyApp } from './app.component';
 //import { ListPage } from '../pages/list/list';
 
 import { UserPage } from '../pages/user/user';
+import { TasksPage } from '../pages/tasks/tasks';
 import { HostPage } from '../pages/host/host';
 
 import { Base } from "../providers/base";
@@ -31,6 +32,7 @@ const fbconfig = {
   declarations: [
     MyApp,
     UserPage,
+    TasksPage,
     HostPage
   ],
   imports: [
@@ -42,6 +44,7 @@ const fbconfig = {
   entryComponents: [
     MyApp,
     UserPage,
+    TasksPage,
     HostPage
   ],
   providers: [
