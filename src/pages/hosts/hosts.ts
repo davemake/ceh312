@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, Platform, Nav, NavParams } from 'ionic-angular';
+import { Base } from "../../providers/base";
 
 /**
  * Generated class for the HostsPage page.
@@ -14,7 +15,15 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class HostsPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+	user: any;
+
+  constructor(
+		public nav: Nav, 
+		public params: NavParams,
+		public platform: Platform, 
+		public base: Base
+  ) {
+		this.user = this.base.user;
   }
 
   ionViewDidLoad() {

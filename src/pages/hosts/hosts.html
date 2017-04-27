@@ -5,14 +5,22 @@
   Ionic pages and navigation.
 -->
 <ion-header>
-
   <ion-navbar>
-    <ion-title>hosts</ion-title>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title text-capitalize>
+      hosts
+    </ion-title>
   </ion-navbar>
-
 </ion-header>
-
-
 <ion-content padding>
-
+    <ion-list>
+      <ion-list-header text-uppercase>
+        my host profile
+      </ion-list-header>
+      <ion-list-header text-uppercase>
+        other host profiles
+      </ion-list-header>
+    </ion-list>
 </ion-content>

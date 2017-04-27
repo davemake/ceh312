@@ -13,6 +13,7 @@ import { Base } from "../../providers/base";
   selector: 'page-signup',
   templateUrl: 'signup.html',
 })
+
 export class SignupPage {
 
 	user: any;
