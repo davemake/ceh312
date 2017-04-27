@@ -37,7 +37,7 @@ export class Base {
 	hosts: FirebaseListObservable<any>;
 	students: FirebaseListObservable<any>;
 	volunteers: FirebaseListObservable<any>;
-	owners: FirebaseListObservable<any>;
+	developers: FirebaseListObservable<any>;
 	agents: FirebaseListObservable<any>;
 	files: FirebaseListObservable<any>;
 	images: FirebaseListObservable<any>;
@@ -56,6 +56,7 @@ export class Base {
 		this.hosts = this.afd.list("/hosts");
 		this.students = this.afd.list("/students");
 		this.volunteers = this.afd.list("/volunteers");
+		this.developers = this.afd.list("/developers");
 		this.files = this.afd.list("/files");
 		this.images = this.afd.list("/images");
 		this.auth.onAuthStateChanged( this.userChanged );

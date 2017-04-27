@@ -9,6 +9,7 @@ import { MyApp } from './app.component';
 import { UserPage } from '../pages/user/user';
 import { TasksPage } from '../pages/tasks/tasks';
 import { HostsPage } from '../pages/hosts/hosts';
+import { DevelopersPage } from '../pages/developers/developers';
 import { Base } from "../providers/base";
 
 import { AngularFireModule } from 'angularfire2'
@@ -32,7 +33,8 @@ const fbconfig = {
     MyApp,
     UserPage,
     TasksPage,
-    HostsPage
+    HostsPage,
+    DevelopersPage
   ],
   imports: [
     BrowserModule,
@@ -44,7 +46,8 @@ const fbconfig = {
     MyApp,
     UserPage,
     TasksPage,
-    HostsPage
+    HostsPage,
+    DevelopersPage
   ],
   providers: [
     StatusBar,

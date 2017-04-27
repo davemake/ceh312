@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { IonicPage, Platform, Nav, NavParams } from 'ionic-angular';
 import { TasksPage } from "../tasks/tasks";
-import { HostPage } from "../host/host";
+import { HostsPage } from "../hosts/hosts";
+import { DevelopersPage } from "../developers/developers";
 import { Base } from "../../providers/base";
 /**
  * Generated class for the StatusPage page.
@@ -19,10 +20,10 @@ export class StatusPage {
 	user: any;
 	email: any;
 	role: any;
-	role_page: any;
 	host: any;
 	student: any;
 	volunteer: any;
+	developers: any;
 
   constructor(
 		public params: NavParams,
@@ -42,7 +43,10 @@ export class StatusPage {
 	linkRole() {
 		switch (this.role) {
 			case "host": 
-				this.nav.setRoot(HostPage); 
+				this.nav.setRoot(HostsPage); 
+				break;
+			case "developer": 
+				this.nav.setRoot(DevelopersPage); 
 				break;
 		}
 	}
