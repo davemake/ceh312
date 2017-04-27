@@ -7,8 +7,7 @@ import { MyApp } from './app.component';
 //import { ListPage } from '../pages/list/list';
 
 import { UserPage } from '../pages/user/user';
-import { Hosts } from '../pages/hosts/hosts';
-import { Host } from '../pages/hosts/host';
+import { HostPage } from '../pages/host/host';
 
 import { Base } from "../providers/base";
 
@@ -32,8 +31,7 @@ const fbconfig = {
   declarations: [
     MyApp,
     UserPage,
-    Hosts,
-    Host
+    HostPage
   ],
   imports: [
     BrowserModule,
@@ -44,8 +42,7 @@ const fbconfig = {
   entryComponents: [
     MyApp,
     UserPage,
-    Hosts,
-    Host
+    HostPage
   ],
   providers: [
     StatusBar,

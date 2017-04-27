@@ -12,7 +12,8 @@
 				</button>
 				<ion-title text-capitalize>
 						<span *ngIf="user">
-							{{user.email}}
+							{{email}}
+							{{role}}
 						</span>
 						<span *ngIf="user && user.emailVerified">
 							email-verified
@@ -27,14 +28,10 @@
 	<ion-list>
 		<ion-list-header text-center text-uppercase>
 		</ion-list-header>
-		<ion-item *ngIf="user && user.role=='host'">
-			<button ion-button full block>host family profile</button>
-		</ion-item>
-		<ion-item *ngIf="user && user.role=='student'">
-			<button ion-button full block>student profile</button>
-		</ion-item>
-		<ion-item *ngIf="user && user.role=='volunteer'">
-			<button ion-button full block>volunteer profile</button>
+		<ion-item>
+			<button ion-button full block large (click)="linkRole()">
+				{{role}}
+			</button>
 		</ion-item>
 	</ion-list>
 

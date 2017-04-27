@@ -11,10 +11,7 @@ export class Base {
 
 	image: any;
 	newImage: any={name: ''};
-
-	status: any;
-
-
+	
 	afa: any;
 	database: any;
 	storage: any;
@@ -23,6 +20,7 @@ export class Base {
 	snapshot: any;
 
 	role: any;
+	role_page: any;
 	signed: any;
 	verified: any;
 	profiled: any;
@@ -69,24 +67,30 @@ export class Base {
 			let userAuth = window.thisBase.userAuth = JSON.parse(JSON.stringify(passAuth));
 			let path = "users/"+window.thisBase.userAuth.uid+"/email";
 			let data = window.thisBase.userAuth.email;
-			window.thisBase.database.ref(path).set(data).then( ()=>{
-				let path = "users/"+window.thisBase.userAuth.uid+"/emailVerified";
-				let data = window.thisBase.userAuth.emailVerified;
-				window.thisBase.database.ref(path).set(data).then( ()=>{
-					let path = "users/"+window.thisBase.userAuth.uid+"/isAnonymous";
-					let data = window.thisBase.userAuth.isAnonymous
-					window.thisBase.database.ref(path).set(data).then( ()=>{
-						let path = "users/"+window.thisBase.userAuth.uid+"/uid";
-						let data = window.thisBase.userAuth.uid
-						window.thisBase.database.ref(path).set(data).then( ()=>{
-							let path = "users/"+window.thisBase.userAuth.uid;
-							window.thisBase.database.ref(path).on("value", (data)=> {
-								window.thisBase.user = data.val();
-							});
-						});
-					});
-				});
-			});
+		window.thisBase.database.ref(path).set(data).then( ()=>{
+			let path = "users/"+window.thisBase.userAuth.uid+"/emailVerified";
+			let data = window.thisBase.userAuth.emailVerified;
+		window.thisBase.database.ref(path).set(data).then( ()=>{
+			let path = "users/"+window.thisBase.userAuth.uid+"/isAnonymous";
+			let data = window.thisBase.userAuth.isAnonymous
+		window.thisBase.database.ref(path).set(data).then( ()=>{
+			let path = "users/"+window.thisBase.userAuth.uid+"/uid";
+			let data = window.thisBase.userAuth.uid;
+		window.thisBase.database.ref(path).set(data).then( ()=>{
+			let path = "users/"+window.thisBase.userAuth.uid;
+		window.thisBase.database.ref(path).on("value", (data)=> {
+			let user = window.thisBase.user = data.val();
+			let path = user.role+"s/"+user.uid;
+		window.thisBase.database.ref(path).on("value", (data)=> {
+			let obj = data.val();
+			let role = window.thisBase.user.role;
+			let role_obj = window.thisBase[role]=obj;
+		});
+		});
+		});
+		});
+		});
+		});
 		} else {
 			window.thisBase.passAuth = null;
 			window.thisBase.userAuth = null;

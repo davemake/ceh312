@@ -1,27 +1,27 @@
 import { Component } from '@angular/core';
 import { IonicPage, Platform, Nav, NavParams } from 'ionic-angular';
-import { HostPage } from "../host/host";
 import { Base } from "../../providers/base";
+
 /**
- * Generated class for the StatusPage page.
+ * Generated class for the HostPage page.
  *
  * See http://ionicframework.com/docs/components/#navigation for more info
  * on Ionic pages and navigation.
  */
 @IonicPage()
 @Component({
-  selector: 'page-status',
-  templateUrl: 'status.html',
+  selector: 'page-host',
+  templateUrl: 'host.html',
 })
-export class StatusPage {
+export class HostPage {
 
 	user: any;
-	email: any;
 	role: any;
 	role_page: any;
 	host: any;
 	student: any;
 	volunteer: any;
+	email: any;
 
   constructor(
 		public params: NavParams,
@@ -31,19 +31,10 @@ export class StatusPage {
   ) {
 		this.user = this.base.user;
 		this.role = this.user.role;
-		this.email = this.user.email;
   }
 
-	linkRole() {
-		switch (this.role) {
-			case "host": 
-				this.nav.setRoot(HostPage); 
-				break;
-		}
-	}
-
   ionViewDidLoad() {
-    console.log('ionViewDidLoad StatusPage');
+    console.log('ionViewDidLoad HostPage');
   }
 
 }
