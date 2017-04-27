@@ -15,12 +15,20 @@
   </ion-navbar>
 </ion-header>
 <ion-content padding>
-    <ion-list>
-      <ion-list-header text-uppercase>
-        my host profile
-      </ion-list-header>
-      <ion-list-header text-uppercase>
-        other host profiles
-      </ion-list-header>
-    </ion-list>
+
+	<ion-list *ngIf="!mode">
+		<ion-item>
+			<button ion-button full large (click)="create()">new host</button>
+		</ion-item>
+	</ion-list>
+
+	<ion-list *ngIf="mode=='new'">
+	</ion-list>
+
+	<ion-list *ngIf="mode">
+		<ion-item>
+			<button ion-button full round large (click)="cancel()">cancel</button>
+		</ion-item>
+	</ion-list>
+
 </ion-content>

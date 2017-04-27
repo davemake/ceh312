@@ -16,6 +16,9 @@ import { Base } from "../../providers/base";
 export class HostsPage {
 
 	user: any;
+  mode: any;
+  item: any;
+  items: any;
 
   constructor(
 		public nav: Nav, 
@@ -24,6 +27,15 @@ export class HostsPage {
 		public base: Base
   ) {
 		this.user = this.base.user;
+    this.mode = null;
+  }
+
+  create() {
+    this.mode = "new";
+  }
+
+  cancel() {
+    this.mode = null;
   }
 
   ionViewDidLoad() {
