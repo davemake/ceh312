@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, Platform, Nav, NavParams } from 'ionic-angular';
 import { Base } from "../../providers/base";
-import { UserPage } from '../user/user';
 
 /**
  * Generated class for the SignoutPage page.
@@ -23,7 +22,6 @@ export class SignoutPage {
 	volunteer: any;
 	email: any="davemakena@gmail.com";
 	password: any="entering";
-	userPage: any=UserPage;
 
   constructor(
 		public nav: Nav, 

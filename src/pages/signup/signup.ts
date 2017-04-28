@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, Platform, Nav, NavParams } from 'ionic-angular';
 import { Base } from "../../providers/base";
+import { TasksPage } from '../tasks/tasks';
 
 /**
  * Generated class for the SignupPage page.
@@ -42,7 +43,7 @@ export class SignupPage {
 		let password = this.password;
 		let role = this.role;
 		this.base.userSignup(email, password, role);
-		this.base.watchUser(this.nav, this.nav.root);
+		this.base.watchUser(this.nav, TasksPage);
 	}
 
   ionViewDidLoad() {

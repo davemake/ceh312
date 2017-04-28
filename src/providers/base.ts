@@ -91,17 +91,37 @@ export class Base {
 			height: 800,
 			quality: 90
 		}
-		this.imagePicker.getPictures(options).then((results) => {
+		this.imagePicker.getPictures(options).then( (results) => {
+			let uri;
+			let ref;
+			let file;
 			for (let i = 0; i < results.length; i++) {
-				let uri = results[i];
-				debugger;
-				let file = uri;
-				if (typeof(file)=="object") {
-					images.push(this.uploadFile('images/', file, this.images));
-				}
+				uri = results[i];
+				ref = this.storage.ref(path+"/"+this.randomName(uri));
+debugger;
+				fetch(uri).then( (data) => {
+					return data.blob()
+				}).then(function (blob) {
+debugger;
+				});
+				//file = new File( uri );
+				ref.put(file).catch( this.catchError );
+				//if (typeof(file)=="object") {
+				//	images.push(this.uploadFile('images/', file, this.images));
+				//}
 			}
 		}, this.catchError );
 		return images;
+	}
+
+	uploadFile(dir, file, arr) {
+		let name = this.randomName(file.name);
+		let obj = {name: name};
+		let storageRef = this.storage.ref(dir+name);
+		storageRef.put(file).then( ()=> {
+				arr.push(obj);
+		});
+		return obj;
 	}
 
 	uploadImagesDesktop(path) {
@@ -289,27 +309,17 @@ export class Base {
 		return key;
 	}	
 
-	uploadFile(dir, file, arr) {
-		let name = this.randomName(file);
-		let obj = {name: name};
-		let storageRef = this.storage.ref(dir+name);
-		storageRef.put(file).then( ()=> {
-				arr.push(obj);
-		});
-		return obj;
-	}
-
-	randomName(file) {
+	randomName(fullname) {
 		let name;
 		let parts;
-		let role;
+		let type;
 		let time;
 		name = Math.random().toString(36).replace(/[^a-z]+/g, '');
 		name = name.substring(0,10);
-		parts = file.name.split(".");
+		parts = fullname.split(".");
 		time = new Date().getTime();
-		role = parts[parts.length-1].toLowerCase();
-		name = time+name+"."+role
+		type = parts[parts.length-1].toLowerCase();
+		name = time+name+"."+type
 		return name
 	}
 

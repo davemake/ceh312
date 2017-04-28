@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, Platform, Nav, NavParams } from 'ionic-angular';
 import { Base } from "../../providers/base";
-import { UserPage } from '../user/user';
 import { TasksPage } from '../tasks/tasks';
 // ADD TASKS PAGE
 
@@ -25,7 +24,6 @@ export class SigninPage {
 	volunteer: any;
 	email: any="davemakena@gmail.com";
 	password: any="entering";
-	userPage: any=UserPage;
 
   constructor(
 		public params: NavParams,
