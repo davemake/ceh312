@@ -42,18 +42,7 @@ export class SignupPage {
 		let password = this.password;
 		let role = this.role;
 		this.base.userSignup(email, password, role);
-		this.watchUser();
-	}
-	
-	watchUser() {
-		let user = this.user;
-		let watch = setInterval( ()=>{
-			console.log("watching...");
-			if (user!=this.base.user) {
-			  this.user = this.base.user;
-				clearInterval(watch);
-			}
-		}, 100);
+		this.base.watchUser(this.nav, this.nav.root);
 	}
 
   ionViewDidLoad() {

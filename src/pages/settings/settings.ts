@@ -54,7 +54,7 @@ export class SettingsPage {
       this.base.passAuth.sendEmailVerification();
       alert("Please check your email and click the link to verify your email address: "+newEmail);
       this.base.userSignout();
-      this.base.watchUser(this.nav);
+      this.base.watchUser(this.nav, this.nav.root);
     }).catch( this.base.catchError );
   }
 
@@ -62,7 +62,7 @@ export class SettingsPage {
     let confirmed = prompt("Permanently Destroy User? Type the word 'destroy' and press OK to continue:");
     if ( confirmed=="destroy" ) {
       this.base.userDestroy();
-      this.base.watchUser(this.nav);
+      this.base.watchUser(this.nav, this.nav.root);
     }
   }
 

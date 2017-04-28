@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { IonicPage, Platform, Nav, NavParams } from 'ionic-angular';
 import { Base } from "../../providers/base";
 
+declare var cordova: any;
+
 /**
  * Generated class for the HostsPage page.
  *
@@ -16,22 +18,29 @@ import { Base } from "../../providers/base";
 export class HostsPage {
 
 	user: any;
-  mode: any;
+  key: any;
+  mode: any=null;
   item: any;
   items: any;
+  mobile: any;
   files: any;
+  images: any;
+  host: any;
+  hosts: any;
   host_family_name: any;
   county: any;
   city: any;
+
 
   constructor(
 		public nav: Nav, 
 		public params: NavParams,
 		public platform: Platform, 
-		public base: Base
+		public base: Base,
   ) {
+    this.mobile = this.base.mobile;
 		this.user = this.base.user;
-    this.mode = null;
+    this.key = this.user.uid;
   }
 
   create() {
@@ -40,8 +49,25 @@ export class HostsPage {
     this.item = this.base.create("users/"+key+"/hosts");
   }
 
-  upload() {
+  createUploadImages() {
+    if (this.user) {
+      let path = "users/"+this.key+"/hosts";
+      this.item = this.base.create(path);
+      this.uploadImages();
+    }
+  }
 
+  uploadImages() {
+    if (this.item) {
+      let path = this.item.path+"/images";
+      this.base.uploadImages(path);
+    }
+  }
+
+  uploadFiles() {
+  }
+
+  chooseFiles() {
   }
 
   cancel() {

@@ -36,19 +36,7 @@ export class SignoutPage {
 
 	signout() {
 		this.base.userSignout();
-		this.base.watchUser(this.nav);
-	}
-	
-	watchUser() {
-		let i = 300;
-		let myTimer = setInterval( ()=>{
-			console.log(i--);
-			if ( i<0 || (this.base.user!=null && typeof(this.base.user)==='object') ) {
-				console.log(this.user = this.base.user);
-				clearInterval(myTimer);
-				this.nav.setRoot(this.userPage);
-			}
-		}, 100);
+		this.base.watchUser(this.nav, this.nav.root);
 	}
   
   ionViewDidLoad() {

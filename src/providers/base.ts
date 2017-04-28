@@ -1,14 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Platform } from 'ionic-angular';
 import { AngularFire, AngularFireDatabase, FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2';
+import { ImagePicker } from '@ionic-native/image-picker';
 
 declare var window: any;
-declare let cordova: any;
+declare var cordova: any;
 
 @Injectable()
 
 export class Base {
 
+// vars
 	image: any;
 	newImage: any={name: ''};
 	
@@ -28,6 +30,7 @@ export class Base {
 	passAuth: any;
 	userAuth: any;
 	user: any;
+	mobile: any;
 
 	host: any;
 	student: any;
@@ -42,11 +45,13 @@ export class Base {
 	agents: FirebaseListObservable<any>;
 	files: FirebaseListObservable<any>;
 	images: FirebaseListObservable<any>;
+// end vars
 
 	constructor(
 		public platform: Platform,
 		public af: AngularFire,
-		public afd: AngularFireDatabase
+		public afd: AngularFireDatabase,
+    	private imagePicker: ImagePicker
 	) {
 		window.thisBase = this;
 		this.afa = this.afd['fbApp'];
@@ -61,8 +66,55 @@ export class Base {
 		this.developers = this.afd.list("/developers");
 		this.files = this.afd.list("/files");
 		this.images = this.afd.list("/images");
+		if (window.cordova) {
+			this.mobile = true;
+		} else {
+			this.mobile = false;
+		}
 		this.auth.onAuthStateChanged( this.userChanged );
     }
+
+	uploadImages(path) {
+		if (this.mobile) {
+			this.uploadImagesMobile(path);
+		} else {
+			this.uploadImagesDesktop(path)
+		}
+	}
+
+// DEBUGGER HERE
+	uploadImagesMobile(path) {
+		let images = [];
+		let options = {
+			maximumImagesCount: 15,
+			width: 800,
+			height: 800,
+			quality: 90
+		}
+		this.imagePicker.getPictures(options).then((results) => {
+			for (let i = 0; i < results.length; i++) {
+				let uri = results[i];
+				debugger;
+				let file = uri;
+				if (typeof(file)=="object") {
+					images.push(this.uploadFile('images/', file, this.images));
+				}
+			}
+		}, this.catchError );
+		return images;
+	}
+
+	uploadImagesDesktop(path) {
+		let images = [];
+		let files = event.target['files'];
+		for (let i in files) {
+			let file = files[i];
+			if (typeof(file)=="object") {
+				images.push(this.uploadFile('images/', file, this.images));
+			}
+		}
+		return images;
+	}
 
 	log(path, action) {
 		let user = this.user;
@@ -203,7 +255,7 @@ export class Base {
 		window.thisBase.snapshot = snapshot.val();
 	}
 
-	update(path, key, data) {
+	update(path, data) {
 		debugger;
 	}
 
@@ -237,18 +289,6 @@ export class Base {
 		return key;
 	}	
 
-	uploadImages() {
-		let images = [];
-		let files = event.target['files'];
-		for (let i in files) {
-			let file = files[i];
-			if (typeof(file)=="object") {
-				images.push(this.uploadFile('images/', file, this.images));
-			};
-		};
-		return images;
-	}
-
 	uploadFile(dir, file, arr) {
 		let name = this.randomName(file);
 		let obj = {name: name};
@@ -279,7 +319,7 @@ export class Base {
 		window.thisBase.status = error.message;
 	}
 	
-	watchUser(nav) {
+	watchUser(nav, page) {
 		let i = 300;
 		let user = this.user;
 		let myTimer = setInterval( ()=>{
@@ -287,7 +327,7 @@ export class Base {
 			if ( i<0 || (user!=this.user && typeof(this.user)==='object') ) {
 				console.log(this.user);
 				clearInterval(myTimer);
-				nav.setRoot(nav.root);
+				nav.setRoot(page);
 			}
 		}, 100);
 	}
