@@ -18,38 +18,22 @@
 
 	<ion-list *ngIf="!mode">
 		<ion-item>
-			<button ion-button full large (click)="create()">new host</button>
+			<button ion-button full large (click)="getNew()">new host</button>
 		</ion-item>
 	</ion-list>
 
-	<ion-list *ngIf="mode=='create'" text-center>
+	<ion-list *ngIf="mode=='new'" text-center>
 
-    <div *ngIf="!files">
-      <ion-list-header>
-        <div text-uppercase>
-          please upload files
-        </div>
-      </ion-list-header>
-      <ion-item>
-        <input type="file" (change)="uploadFiles()" multiple><br>
-      </ion-item>
-    </div>
+    <ion-list-header>
+      <div text-uppercase>
+        please upload files
+      </div>
+    </ion-list-header>
+    <ion-item>
+      <input type="file" (change)="createByFiles()" multiple><br>
+    </ion-item>
 
-    <div *ngIf="!images">
-      <ion-list-header>
-        <div text-uppercase>
-          please upload images
-        </div>
-      </ion-list-header>
-      <ion-item *ngIf="mobile">
-        <button ion-button large (click)="uploadImages()">upload images</button>
-      </ion-item>
-      <ion-item *ngIf="!mobile">
-        <input type="file" (change)="uploadFiles()" multiple>
-      </ion-item>
-    </div>
 	</ion-list>
-
 
 	<!--input type="file" (change)="upload()" multiple><br>
 
@@ -69,6 +53,12 @@
 		<ion-item>
 			<button ion-button full round large (click)="cancel()">cancel</button>
 		</ion-item>
+	</ion-list>
+
+	<ion-list>
+    <ion-item *ngFor="let i of images | async">
+      {{i.$key}}<br>
+    </ion-item>
 	</ion-list>
 
 </ion-content>

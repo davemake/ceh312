@@ -3,6 +3,10 @@ import { Platform } from 'ionic-angular';
 import { AngularFire, AngularFireDatabase, FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2';
 import { ImagePicker } from '@ionic-native/image-picker';
 
+// constructor(private file: File) { } ...
+// this.file.checkDir(this.file.dataDirectory, 'mydir').then(_ => console.log('Directory exists')).catch(err => console.log('Directory doesnt exist'));
+import { File } from '@ionic-native/file';
+
 declare var window: any;
 declare var cordova: any;
 
@@ -51,7 +55,8 @@ export class Base {
 		public platform: Platform,
 		public af: AngularFire,
 		public afd: AngularFireDatabase,
-    	private imagePicker: ImagePicker
+    	private imagePicker: ImagePicker,
+		private file: File
 	) {
 		window.thisBase = this;
 		this.afa = this.afd['fbApp'];
@@ -74,66 +79,39 @@ export class Base {
 		this.auth.onAuthStateChanged( this.userChanged );
     }
 
-	uploadImages(path) {
-		if (this.mobile) {
-			this.uploadImagesMobile(path);
-		} else {
-			this.uploadImagesDesktop(path)
-		}
-	}
-
-// DEBUGGER HERE
-	uploadImagesMobile(path) {
-		let images = [];
-		let options = {
-			maximumImagesCount: 15,
-			width: 800,
-			height: 800,
-			quality: 90
-		}
-		this.imagePicker.getPictures(options).then( (results) => {
-			let uri;
-			let ref;
-			let file;
-			for (let i = 0; i < results.length; i++) {
-				uri = results[i];
-				ref = this.storage.ref(path+"/"+this.randomName(uri));
-debugger;
-				fetch(uri).then( (data) => {
-					return data.blob()
-				}).then(function (blob) {
-debugger;
-				});
-				//file = new File( uri );
-				ref.put(file).catch( this.catchError );
-				//if (typeof(file)=="object") {
-				//	images.push(this.uploadFile('images/', file, this.images));
-				//}
-			}
-		}, this.catchError );
-		return images;
-	}
-
-	uploadFile(dir, file, arr) {
-		let name = this.randomName(file.name);
-		let obj = {name: name};
-		let storageRef = this.storage.ref(dir+name);
-		storageRef.put(file).then( ()=> {
-				arr.push(obj);
-		});
-		return obj;
-	}
-
-	uploadImagesDesktop(path) {
-		let images = [];
+	uploadFiles(path) {
 		let files = event.target['files'];
+		let filepath;
+		let file;
+		let name;
+		let type;
+		let obj;
+		let ref;
+		let i;
 		for (let i in files) {
-			let file = files[i];
+			file = files[i];
 			if (typeof(file)=="object") {
-				images.push(this.uploadFile('images/', file, this.images));
+				name = this.randomName(file.name);
+				type = name.split(".")[1];
+				if ("jpg jpeg tiff gif bmp png svg".match(type)) {
+					obj = {
+						path: path+"/images/"+name,
+						name: name
+					}
+					ref = this.storage.ref(obj.path);
+					ref.put(file);
+					this.afd.list(path+"/images").push(obj);
+				} else {
+					obj = {
+						path: path+"/files/"+name,
+						name: name
+					}
+					ref = this.storage.ref(obj.path);
+					ref.put(file);
+					this.afd.list(path+"/files").push(obj);
+				}
 			}
 		}
-		return images;
 	}
 
 	log(path, action) {
@@ -171,7 +149,7 @@ debugger;
 		window.thisBase.database.ref(path).on("value", (data)=> {
 			let obj = data.val();
 			let role = window.thisBase.user.role;
-			let role_obj = window.thisBase[role]=obj;
+			window.thisBase[role]=obj;
 		});
 		});
 		});
@@ -316,10 +294,15 @@ debugger;
 		let time;
 		name = Math.random().toString(36).replace(/[^a-z]+/g, '');
 		name = name.substring(0,10);
-		parts = fullname.split(".");
-		time = new Date().getTime();
-		type = parts[parts.length-1].toLowerCase();
-		name = time+name+"."+type
+		if (fullname) {
+			parts = fullname.split(".");
+			time = new Date().getTime();
+			type = parts[parts.length-1].toLowerCase();
+			name = time+name+"."+type;
+		} else {
+			time = new Date().getTime();
+			name = time+name;
+		}
 		return name
 	}
 

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AngularFire, AngularFireDatabase, FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2';
 import { IonicPage, Platform, Nav, NavParams } from 'ionic-angular';
 import { Base } from "../../providers/base";
 
@@ -20,16 +21,19 @@ export class HostsPage {
 	user: any;
   key: any;
   mode: any=null;
-  item: any;
+  item: any={};
+  item_old: any;
   items: any;
   mobile: any;
-  files: any;
-  images: any;
   host: any;
   hosts: any;
   host_family_name: any;
   county: any;
   city: any;
+  keywords: any;
+  introduction: any;
+	images: FirebaseListObservable<any>;
+	files: FirebaseListObservable<any>;
 
 
   constructor(
@@ -43,31 +47,40 @@ export class HostsPage {
     this.key = this.user.uid;
   }
 
-  create() {
-    let mode = this.mode = "create";
-    let key = this.user.uid;
-    this.item = this.base.create("users/"+key+"/hosts");
+  getNew() {
+    let mode = this.mode = "new";
+    this.item_old = this.item;
+    this.item = {}
   }
 
-  createUploadImages() {
+  getOld() {
+    let mode = this.mode = "read";
+    this.item = this.item_old;
+    this.processItem();
+  }
+
+  processItem() {
+    if (this.item) {
+      if (this.item.path) {
+        this.files = this.base.afd.list(this.item.path+"/files");
+        this.images = this.base.afd.list(this.item.path+"/images");
+      }
+      this.host_family_name = this.item.host_family_name;
+      this.county = this.item.county;
+      this.city = this.item.city;
+      this.keywords = this.item.keywords;
+      this.introduction = this.item.introduction;
+    }
+  }
+
+  createByFiles() {
     if (this.user) {
       let path = "users/"+this.key+"/hosts";
       this.item = this.base.create(path);
-      this.uploadImages();
+      this.base.uploadFiles(this.item.path);
+      this.files = this.base.afd.list(this.item.path+"/files");
+      this.images = this.base.afd.list(this.item.path+"/images");
     }
-  }
-
-  uploadImages() {
-    if (this.item) {
-      let path = this.item.path+"/images";
-      this.base.uploadImages(path);
-    }
-  }
-
-  uploadFiles() {
-  }
-
-  chooseFiles() {
   }
 
   cancel() {
