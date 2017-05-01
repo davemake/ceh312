@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, Platform, Nav, NavParams } from 'ionic-angular';
 import { Base } from "../../providers/base";
-import { TasksPage } from '../tasks/tasks';
+import { UserPage } from '../user/user';
 // ADD TASKS PAGE
 
 /**
@@ -39,7 +39,7 @@ export class SigninPage {
 		let password = this.password;
 		this.base.user = null;
 		this.base.userSignin(email, password);
-		this.base.watchUser(this.nav, TasksPage); // ADD PAGE TO METHOD
+		this.base.watchUser(this.nav, UserPage); // ADD PAGE TO METHOD
 	}
 
   ionViewDidLoad() {

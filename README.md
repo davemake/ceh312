@@ -18,3 +18,11 @@ $ ionic start myApp
 ```
 
 More info on this can be found on the Ionic [Getting Started](http://ionicframework.com/docs/v2/getting-started/) page.
+
+# Hosting
+    ## Add firebase tools
+        $ sudo npm install -g firebase-tools
+        $ firebase login
+        ### Success! Logged in as ...
+            $ firebase init
+            > Hosting: Configure and deploy Firebase Hosting sites

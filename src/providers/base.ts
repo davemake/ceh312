@@ -26,7 +26,6 @@ export class Base {
 	snapshot: any;
 
 	role: any;
-	role_page: any;
 	signed: any;
 	verified: any;
 	profiled: any;
@@ -34,7 +33,7 @@ export class Base {
 	passAuth: any;
 	userAuth: any;
 	user: any;
-	mobile: any;
+	isMobile: any;
 
 	host: any;
 	student: any;
@@ -51,6 +50,7 @@ export class Base {
 	images: FirebaseListObservable<any>;
 // end vars
 
+// constructor
 	constructor(
 		public platform: Platform,
 		public af: AngularFire,
@@ -71,47 +71,35 @@ export class Base {
 		this.developers = this.afd.list("/developers");
 		this.files = this.afd.list("/files");
 		this.images = this.afd.list("/images");
-		if (window.cordova) {
-			this.mobile = true;
-		} else {
-			this.mobile = false;
-		}
+		this.isMobile = this.isMobileCheck();
 		this.auth.onAuthStateChanged( this.userChanged );
     }
+// end constructor
 
 	uploadFiles(path) {
 		let files = event.target['files'];
-		let filepath;
-		let file;
-		let name;
-		let type;
-		let obj;
-		let ref;
-		let i;
 		for (let i in files) {
-			file = files[i];
+			let file = files[i];
 			if (typeof(file)=="object") {
-				name = this.randomName(file.name);
-				type = name.split(".")[1];
-				if ("jpg jpeg tiff gif bmp png svg".match(type)) {
-					obj = {
-						path: path+"/images/"+name,
-						name: name
-					}
-					ref = this.storage.ref(obj.path);
-					ref.put(file);
-					this.afd.list(path+"/images").push(obj);
-				} else {
-					obj = {
-						path: path+"/files/"+name,
-						name: name
-					}
-					ref = this.storage.ref(obj.path);
-					ref.put(file);
-					this.afd.list(path+"/files").push(obj);
-				}
-			}
-		}
+				this.uploadFile(path, file);
+			};
+		};
+	}
+
+	uploadFile(path, file) {
+		let obj = {
+			path: "",
+			name: this.randomName(file.name)
+		};
+		let type = obj.name.split(".")[1];
+		if ("jpg jpeg tiff gif bmp png svg".match(type)) {
+			obj.path = path+"/images";
+		} else {
+			obj.path = path+"/files";
+		};
+		let ref = this.storage.ref(obj.path);
+		ref.put(file);
+		this.afd.list(obj.path).push(obj);
 	}
 
 	log(path, action) {
@@ -245,12 +233,10 @@ export class Base {
 	
 	read(path) {
 		window.thisBase.snapshot = null;
-		window.thisBase.database.ref(path).on('value', window.thisBase.readSnap, window.thisBase.catchError);
+		window.thisBase.database.ref(path).on('value', (snapshot) => {
+			window.thisBase.snapshot = snapshot.val();
+		}, window.thisBase.catchError);
 		return window.thisBase.snapshot;
-	}
-
-	readSnap(snapshot) {
-		window.thisBase.snapshot = snapshot.val();
 	}
 
 	update(path, data) {
@@ -325,5 +311,12 @@ export class Base {
 		}, 100);
 	}
 
+	isMobileCheck() {
+		if (window.cordova) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 }

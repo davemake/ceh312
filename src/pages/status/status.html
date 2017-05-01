@@ -12,8 +12,8 @@
 				</button>
 				<ion-title text-capitalize>
 						<span *ngIf="user">
-							{{email}}
-							{{role}}
+							{{user.email}}
+							{{user.role}}
 						</span>
 						<span *ngIf="user && user.emailVerified">
 							email-verified
@@ -25,14 +25,17 @@
 
 <ion-content padding>
 
-	<ion-list>
-		<ion-list-header text-center text-uppercase>
-		</ion-list-header>
-		<ion-item>
-			<button ion-button full large (click)="linkRole()">
-				{{role}}
-			</button>
-		</ion-item>
-	</ion-list>
+	<div *ngIf="user">
+		<ion-list>
+			<ion-list-header text-center>
+				<h1  text-uppercase> menu</h1>
+			</ion-list-header>
+			<ion-item *ngFor="let p of pages">
+				<button ion-button full large (click)="openPage(p)">
+					{{p.title}}
+				</button>
+			</ion-item>
+		</ion-list>
+	</div>
 
 </ion-content>

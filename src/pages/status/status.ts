@@ -18,12 +18,11 @@ import { Base } from "../../providers/base";
 export class StatusPage {
 
 	user: any;
-	email: any;
-	role: any;
 	host: any;
 	student: any;
 	volunteer: any;
 	developers: any;
+  pages: Array<{title: string, component: any}>;
 
   constructor(
 		public params: NavParams,
@@ -32,23 +31,24 @@ export class StatusPage {
 		public nav: Nav,
   ) {
 		this.user = this.base.user;
-		this.role = this.user.role;
-		this.email = this.user.email;
-  }
-
-	linkTasks() {
-		this.nav.setRoot(TasksPage);
-	}
-
-	linkRole() {
-		switch (this.role) {
-			case "host": 
-				this.nav.setRoot(HostsPage); 
+		switch (this.user.role) {
+			case "developer":
+				this.pages = [
+					{ title: 'Developer', component: DevelopersPage }
+				];
 				break;
-			case "developer": 
-				this.nav.setRoot(DevelopersPage); 
+			case "host":
+				this.pages = [
+					{ title: 'Host', component: HostsPage }
+				];
 				break;
 		}
+  }
+
+	openPage(page) {
+    // Reset the content nav to have just this page
+    // we wouldn't want the back button to show in this scenario
+    this.nav.setRoot(page.component);
 	}
 
   ionViewDidLoad() {

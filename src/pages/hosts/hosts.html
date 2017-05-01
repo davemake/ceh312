@@ -18,7 +18,7 @@
 
 	<ion-list *ngIf="!mode">
 		<ion-item>
-			<button ion-button full large (click)="getNew()">new host</button>
+			<button ion-button full large (click)="newItem()">new host</button>
 		</ion-item>
 	</ion-list>
 
@@ -56,6 +56,28 @@
 	</ion-list>
 
 	<ion-list>
+    <ion-list-header text-uppercase>
+      host
+    </ion-list-header>
+    <ion-item *ngIf="host">
+      {{host.path}}<br>
+      {{host.$key}}
+    </ion-item>
+	</ion-list>
+
+	<ion-list>
+    <ion-list-header text-uppercase>
+      hosts
+    </ion-list-header>
+    <ion-item *ngFor="let i of hosts | async">
+      {{i.$key}}<br>
+    </ion-item>
+	</ion-list>
+
+	<ion-list>
+    <ion-list-header text-uppercase>
+      images
+    </ion-list-header>
     <ion-item *ngFor="let i of images | async">
       {{i.$key}}<br>
     </ion-item>
