@@ -24,7 +24,6 @@ export class HostsPage {
   mode: any;
   modeNew: any;
   modeRead: any;
-  modeEdit: any;
   item: any;
   item_old: any;
   items: any;
@@ -36,8 +35,9 @@ export class HostsPage {
   city: any;
   keywords: any;
   statement: any;
-	images: FirebaseListObservable<any>;
-	files: FirebaseListObservable<any>;
+	images: any;
+	files: any;
+  editModes: any=[];
 // end vars
 
 // constructor
@@ -59,41 +59,66 @@ export class HostsPage {
     this.mode = mode;
     this.modeNew = null;
     this.modeRead = null;
-    this.modeEdit = null;
+    this.editModes = [];
     switch (mode) {
-      case "new": 
+      case "new":
+        this.item = {
+          host_family_name: null,
+          county: null,
+          city: null,
+          keywords: null,
+          statement: null
+        };
+        this.images = null;
+        this.files = null;
         this.modeNew = true;
         break;
       case "read": 
         this.modeRead = true; 
         break;
-      case "edit": 
-        this.modeEdit = true; 
-        break;
       default: 
         this.mode = null;
         this.item = null;
+        this.images = null;
+        this.files = null;
         break;
     }
+  }
+
+  setEdit(mode) {
+    if (mode) {
+      if (!this.editModes.includes(mode)) {
+        this.editModes.push(mode);
+      }
+    } else {
+      this.editModes = [];
+    }
+  }
+
+  edit(mode) {
+    return this.editModes.includes(mode);
   }
 
   setItem(path) {
     if (path) {
       this.item = this.base.read(path);
+      this.images = [];
+      if (this.item.images) {
+        for (var i in this.item.images) {
+          this.images.push(this.item.images[i]);
+        }
+      }
+      this.files = [];
+      if (this.item.files) {
+        for (var i in this.item.files) {
+          this.files.push(this.item.files[i]);
+        }
+      }
     }
   }
 
   newItem() {
-    this.item = {
-      images: null,
-      files: null,
-      host_family_name: null,
-      county: null,
-      city: null,
-      keywords: null,
-      statement: null
-    }
-    this.nav.push(HostsPage, {mode: 'new', item: this.item});
+    this.nav.push(HostsPage, {mode: 'new'});
   }
 
   read(item) {
@@ -111,6 +136,14 @@ export class HostsPage {
       this.base.uploadFiles(this.item.path);
       this.nav.pop();
       this.read(this.item);
+    }
+  }
+
+  upload() {
+    if (this.user && this.item) {
+      this.base.uploadFiles(this.item.path);
+      this.nav.pop();
+      this.read(this.item);   
     }
   }
 

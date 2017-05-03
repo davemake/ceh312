@@ -10,12 +10,9 @@
       <ion-icon name="menu"></ion-icon>
     </button>
     <ion-title text-capitalize>
-      <span *ngIf="!mode">
-        hosts
-      </span>
-      <span *ngIf="mode=='new'">
-        new host
-      </span>
+      <span *ngIf="!mode">hosts</span>
+      <span *ngIf="modeNew">new host</span>
+      <span *ngIf="modeRead">host</span>
     </ion-title>
     <ion-buttons end>
       <button ion-button *ngIf="!mode" (click)="newItem()">new</button>
@@ -33,16 +30,36 @@
     </ion-item>
 	</ion-list>
 
-	<ion-list *ngIf="item && modeRead" text-center>
-    <button ion-item large>
-      images: {{item.images}}
+	<ion-list *ngIf="item && modeRead">
+
+    <button ion-item *ngIf="!edit('images')" (click)="setEdit('images')">
+      upload images
     </button>
-    <button ion-item large>
-      files: {{item.files}},
-      host_family_name: {{item.host_family_name}},
-      county: {{item.county}},
-      city: {{item.city}},
-      keywords: {{item.keywords}},
+    <ion-item *ngIf="edit('images')">
+      <input type="file" (change)="upload()" multiple><br>
+    </ion-item>
+    <div *ngIf="images">
+      <button ion-item *ngFor="let i of images">
+        {{i.path}}/{{i.name}}
+      </button>
+    </div>
+
+    <button ion-item *ngIf="!edit('images')" (click)="setEdit('images')">
+      files: {{item.files}}
+    </button>
+    <button ion-item *ngIf="!edit('host_family_name')" (click)="setEdit('host_family_name')">
+      host_family_name: {{item.host_family_name}
+    </button>
+    <button ion-item *ngIf="!edit('county')" (click)="setEdit('county')">
+      county: {{item.county}}
+    </button>
+    <button ion-item *ngIf="!edit('city')" (click)="setEdit('city')">
+      city: {{item.city}}
+    </button>
+    <button ion-item *ngIf="!edit('keywords')" (click)="setEdit('keywords')">
+      keywords: {{item.keywords}}
+    </button>
+    <button ion-item *ngIf="!edit('statement')" (click)="setEdit('statement')">
       statement: {{item.statement}}
     </button>
     <ion-item>
@@ -57,9 +74,6 @@
       <label ion-label text-capitalize>Upload Files & Images</label>
       <input type="file" (change)="createByFiles()" multiple><br>
     </ion-item>
-	</ion-list>
-
-	<ion-list *ngIf="item && modeEdit" text-center>
 	</ion-list>
 
 </ion-content>

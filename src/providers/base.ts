@@ -134,9 +134,7 @@ export class Base {
 			let file = files[i];
 			if (typeof(file)=="object") {
 				let name = this.randomName(file.name);
-				let path_database = this.uploadFile(path, name, file);
-				// save name to users/uid/hosts/key/images|files/key=name
-				this.afd.list(path_database).push(name);
+				this.uploadFile(path, name, file);
 			};
 		};
 	}
@@ -156,7 +154,12 @@ export class Base {
 		};
 		let ref = this.storage.ref(path_storage);
 		ref.put(file);
-		return path_database;
+		let database_obj = {
+			created: (new Date).getTime(),
+			path: path_database,
+			name: name
+		}
+		this.afd.list(path_database).push(database_obj);
 	}
 
 	log(path, action) {
