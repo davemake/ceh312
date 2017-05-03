@@ -2,6 +2,9 @@ import { Component } from '@angular/core';
 import { IonicPage, Platform, Nav, NavParams } from 'ionic-angular';
 import { Base } from "../../providers/base";
 import { UserPage } from '../user/user';
+import { TasksPage } from '../tasks/tasks';
+import { HostsPage } from '../hosts/hosts';
+import { DevelopersPage } from '../developers/developers';
 // ADD TASKS PAGE
 
 /**

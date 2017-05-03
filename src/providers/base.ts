@@ -1,11 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Platform } from 'ionic-angular';
 import { AngularFire, AngularFireDatabase, FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2';
-import { ImagePicker } from '@ionic-native/image-picker';
-
-// constructor(private file: File) { } ...
-// this.file.checkDir(this.file.dataDirectory, 'mydir').then(_ => console.log('Directory exists')).catch(err => console.log('Directory doesnt exist'));
-import { File } from '@ionic-native/file';
+import { Storage } from '@ionic/storage';
 
 declare var window: any;
 declare var cordova: any;
@@ -55,8 +51,7 @@ export class Base {
 		public platform: Platform,
 		public af: AngularFire,
 		public afd: AngularFireDatabase,
-    	private imagePicker: ImagePicker,
-		private file: File
+		public ionicStorage: Storage
 	) {
 		window.thisBase = this;
 		this.afa = this.afd['fbApp'];
@@ -76,30 +71,92 @@ export class Base {
     }
 // end constructor
 
+	memorizeUser() {
+		let storage = this.ionicStorage;
+		if (this.user) {
+			storage.ready().then(() => {
+				storage.set('user', [this.user]).then(() => {
+					console.log("memorize user", this.user);
+				});
+				storage.set('userAuth', [this.userAuth]).then(() => {
+					console.log("memorize userAuth", this.userAuth);
+				});
+			});
+		} else {
+			storage.ready().then(() => {
+				storage.set('user', []).then(() => {
+					console.log("forget user");
+				});
+				storage.set('userAuth', []).then(() => {
+					console.log("forget userAuth");
+				});
+			});
+		}
+	}
+
+	rememberUser(nav, page) {
+		if (!this.user) {
+			let user = this.user;
+			let storage = this.ionicStorage;
+			storage.ready().then(() => {
+				if (!this.userAuth) {
+					storage.get('userAuth').then((data) => {
+						if (data) {
+							this.userAuth = data[0];
+							console.log("remember userAuth", this.userAuth);
+						}
+					});
+				}
+				if (!this.user) {
+					storage.get('user').then((data) => {
+						if (data) {
+							this.user = data[0];
+							console.log("remember user", this.user);
+						}
+					});
+				}
+			});
+			let i = 300;
+			let myTimer = setInterval( ()=>{
+				console.log(i--);
+				if ( i<0 || (user!=this.user && typeof(this.user)==='object') ) {
+					console.log(this.user);
+					clearInterval(myTimer);
+					nav.setRoot(page, {role: this.user.role});
+				}
+			}, 100);
+		}
+	}
+
 	uploadFiles(path) {
 		let files = event.target['files'];
 		for (let i in files) {
 			let file = files[i];
 			if (typeof(file)=="object") {
-				this.uploadFile(path, file);
+				let name = this.randomName(file.name);
+				let path_database = this.uploadFile(path, name, file);
+				// save name to users/uid/hosts/key/images|files/key=name
+				this.afd.list(path_database).push(name);
 			};
 		};
 	}
 
-	uploadFile(path, file) {
-		let obj = {
-			path: "",
-			name: this.randomName(file.name)
-		};
-		let type = obj.name.split(".")[1];
+	uploadFile(path, name, file) {
+		let path_storage;
+		let path_database;
+		let naming = name.split(".");
+		let last = naming.length-1;
+		let type = naming[last];
 		if ("jpg jpeg tiff gif bmp png svg".match(type)) {
-			obj.path = path+"/images";
+			path_storage = path+"/images/"+name;
+			path_database = path+"/images";
 		} else {
-			obj.path = path+"/files";
+			path_storage = path+"/files/"+name;
+			path_database = path+"/files";
 		};
-		let ref = this.storage.ref(obj.path);
+		let ref = this.storage.ref(path_storage);
 		ref.put(file);
-		this.afd.list(obj.path).push(obj);
+		return path_database;
 	}
 
 	log(path, action) {
@@ -178,12 +235,14 @@ export class Base {
 		this.auth.signInWithEmailAndPassword(email, password).catch( this.catchError );
 	}
 
-	userSignout() {
+	userSignout(nav, page) {
 		this.auth.signOut().then( ()=>{
 			console.log("signed out");
-			window.thisBase.user = null;
-			window.thisBase.userAuth = null;
 		}).catch( this.catchError );
+		this.user = null;
+		this.userAuth = null;
+		this.memorizeUser();
+		nav.setRoot(page);
 	}
 
 	userDestroy() {
@@ -251,14 +310,11 @@ export class Base {
 		return this.storage.ref(path+'/'+key);
 	}
 
-	destroy(dir, key) {
-		this[dir].remove(key);
-	}
-
-	destroyStorage(dir, i) {
-		let ref = this.afa.storage().ref(dir+'/'+i.name);
-		ref.delete();
-		this.destroy(dir, i.$key);
+	destroy(path) {
+		this.database.ref(path).delete();
+		debugger;
+		// check if storage
+		// destroy storage
 	}
 
 	imageId(i) {
@@ -306,7 +362,8 @@ export class Base {
 			if ( i<0 || (user!=this.user && typeof(this.user)==='object') ) {
 				console.log(this.user);
 				clearInterval(myTimer);
-				nav.setRoot(page);
+				this.memorizeUser();
+				nav.setRoot(page, {role: this.user.role});
 			}
 		}, 100);
 	}

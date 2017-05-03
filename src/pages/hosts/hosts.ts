@@ -18,10 +18,14 @@ declare var cordova: any;
 })
 export class HostsPage {
 
+// vars
 	user: any;
   key: any;
-  mode: any=null;
-  item: any={};
+  mode: any;
+  modeNew: any;
+  modeRead: any;
+  modeEdit: any;
+  item: any;
   item_old: any;
   items: any;
   isMobile: any;
@@ -31,11 +35,12 @@ export class HostsPage {
   county: any;
   city: any;
   keywords: any;
-  introduction: any;
+  statement: any;
 	images: FirebaseListObservable<any>;
 	files: FirebaseListObservable<any>;
+// end vars
 
-
+// constructor
   constructor(
 		public nav: Nav, 
 		public params: NavParams,
@@ -44,66 +49,69 @@ export class HostsPage {
   ) {
     this.isMobile = this.base.isMobile;
 		this.user = this.base.user;
-    this.key = this.user.uid;
-    if (this.item) {
-      this.hosts = this.base.afd.list(this.user.path+"/hosts");
-      this.files = this.base.afd.list(this.item.path+"/files");
-      this.images = this.base.afd.list(this.item.path+"/images");
+    this.hosts = this.base.afd.list("/hosts");
+    this.setMode(this.params.get('mode'));
+    this.setItem(this.params.get('path'));
+  }
+// end constructor
+
+  setMode(mode) {
+    this.mode = mode;
+    this.modeNew = null;
+    this.modeRead = null;
+    this.modeEdit = null;
+    switch (mode) {
+      case "new": 
+        this.modeNew = true;
+        break;
+      case "read": 
+        this.modeRead = true; 
+        break;
+      case "edit": 
+        this.modeEdit = true; 
+        break;
+      default: 
+        this.mode = null;
+        this.item = null;
+        break;
+    }
+  }
+
+  setItem(path) {
+    if (path) {
+      this.item = this.base.read(path);
     }
   }
 
   newItem() {
-    let mode = this.mode = "new";
-    this.item_old = this.item;
-    this.item = {}
-    this.processItem();
-  }
-
-  oldItem() {
-    let mode = this.mode = "read";
-    this.item = this.item_old;
-    this.processItem();
-  }
-
-  getItem(key) {
-debugger;
-  }
-
-  processItem() {
-    if (this.user && this.user.path) {
-      this.items = this.base.afd.list(this.user.path+"/hosts");
-    } else {
-      this.items = null;
+    this.item = {
+      images: null,
+      files: null,
+      host_family_name: null,
+      county: null,
+      city: null,
+      keywords: null,
+      statement: null
     }
-    if (this.item) {
-      if (this.item.path) {
-        this.files = this.base.afd.list(this.item.path+"/files");
-        this.images = this.base.afd.list(this.item.path+"/images");
-      } else {
-        this.files = null;
-        this.images = null;
-      }
-      this.host_family_name = this.item.host_family_name;
-      this.county = this.item.county;
-      this.city = this.item.city;
-      this.keywords = this.item.keywords;
-      this.introduction = this.item.introduction;
-    }
+    this.nav.push(HostsPage, {mode: 'new', item: this.item});
+  }
+
+  read(item) {
+    this.nav.push(HostsPage, {mode: 'read', path: item.path});
+  }
+
+  destroy(item) {
+    this.base.destroy(item.path);
+    this.setMode(null);
   }
 
   createByFiles() {
     if (this.user) {
-      let path = this.user.path+"/hosts";
-      this.item = this.base.create(path);
+      this.item = this.base.create("hosts");
       this.base.uploadFiles(this.item.path);
-      this.hosts = this.base.afd.list(this.user.path+"/hosts");
-      this.files = this.base.afd.list(this.item.path+"/files");
-      this.images = this.base.afd.list(this.item.path+"/images");
+      this.nav.pop();
+      this.read(this.item);
     }
-  }
-
-  cancel() {
-    this.mode = null;
   }
 
   ionViewDidLoad() {

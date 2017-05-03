@@ -7,11 +7,8 @@
 
   <ion-content>
     <ion-list>
-      <ion-list-header *ngIf="user" text-center>
-        {{user}}
-      </ion-list-header>
-      <button menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)">
-        {{p.title}}
+      <button menuClose ion-item (click)="signout()">
+        Signout
       </button>
     </ion-list>
   </ion-content>

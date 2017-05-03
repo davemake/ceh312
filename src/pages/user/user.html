@@ -1,13 +1,13 @@
 
 <ion-tabs>
     <div *ngIf="!user">
-        <ion-tab [root]="signinRoot" tabTitle="Signin" tabIcon="information-circle"></ion-tab>
-        <ion-tab [root]="signupRoot" tabTitle="Signup" tabIcon="information-circle"></ion-tab>
-        <ion-tab [root]="helpRoot" tabTitle="Help" tabIcon="information-circle"></ion-tab>
+        <ion-tab [root]="signinRoot" tabTitle="Signin"></ion-tab>
+        <ion-tab [root]="signupRoot" tabTitle="Signup"></ion-tab>
+        <ion-tab [root]="helpRoot" tabTitle="Help"></ion-tab>
     </div>
     <div *ngIf="user">
-        <ion-tab [root]="statusRoot" tabTitle="Home" tabIcon="information-circle"></ion-tab>
-        <ion-tab [root]="settingsRoot" tabTitle="Settings" tabIcon="information-circle"></ion-tab>
-        <ion-tab [root]="signoutRoot" tabTitle="Signout" tabIcon="information-circle"></ion-tab>
+        <ion-tab [root]="statusRoot" tabTitle="Home"></ion-tab>
+        <ion-tab [root]="settingsRoot" tabTitle="Settings"></ion-tab>
+        <ion-tab [root]="signoutRoot" tabTitle="Signout"></ion-tab>
     </div>
 </ion-tabs>

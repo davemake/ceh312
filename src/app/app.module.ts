@@ -25,13 +25,12 @@
   // https://github.com/Telerik-Verified-Plugins/ImagePicker
   import { ImagePicker } from '@ionic-native/image-picker';
 
-  // http://ionicframework.com/docs/native/file/
-  // $ cordova plugin add --save cordova-plugin-file
-  // $ sudo npm install --save @ionic-native/file
-  // import { File } from '@ionic-native/file';
-  // constructor(private file: File) { } ...
-  // this.file.checkDir(this.file.dataDirectory, 'mydir').then(_ => console.log('Directory exists')).catch(err => console.log('Directory doesnt exist'));
-  import { File } from '@ionic-native/file';
+  // ...@NgModule({...imports: [...IonicStorageModule.forRoot(),...
+  // import { Storage } from '@ionic/storage';
+  // ...constructor(...public IonicStorage: Storage,...
+  // this.storage.ready().then(() => { this.storage.set('myValue', ['myData']); })
+  // this.storage.get('myValue').then((data) => { this.data = data; })
+  import { IonicStorageModule } from '@ionic/storage';
 
   import { AngularFireModule } from 'angularfire2'
   import { StatusBar } from '@ionic-native/status-bar';
@@ -63,6 +62,7 @@ const fbconfig = {
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
+    IonicStorageModule.forRoot(),
     AngularFireModule.initializeApp(fbconfig)
   ],
   bootstrap: [IonicApp],
@@ -78,7 +78,6 @@ const fbconfig = {
     SplashScreen,
     Base,
     ImagePicker,
-    File,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })

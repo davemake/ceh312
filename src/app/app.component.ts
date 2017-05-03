@@ -6,6 +6,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 //import { HomePage } from '../pages/home/home';
 //import { ListPage } from '../pages/list/list';
 import { UserPage } from '../pages/user/user';
+import { SignoutPage } from '../pages/signout/signout';
 import { TasksPage } from '../pages/tasks/tasks';
 import { HostsPage } from '../pages/hosts/hosts';
 import { DevelopersPage } from '../pages/developers/developers';
@@ -25,21 +26,21 @@ export class MyApp {
   user: any;
 
   constructor(
-    public platform: Platform, 
+    public platform: Platform,
     public statusBar: StatusBar, 
     public splashScreen: SplashScreen,
     public base: Base
   ) {
     this.initializeApp();
-    this.user = this.base.user;
     // used for an example of ngFor and navigation
     this.pages = [
-      { title: 'User', component: UserPage },
-      { title: 'Tasks', component: TasksPage },
-      { title: 'Hosts', component: HostsPage },
-      { title: 'Help', component: DevelopersPage }
+      { title: 'Signout', component: UserPage }
     ];
     
+  }
+
+  signout() {
+    this.base.userSignout(this.nav, UserPage);
   }
 
   initializeApp() {

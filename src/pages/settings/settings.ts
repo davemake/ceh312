@@ -53,8 +53,7 @@ export class SettingsPage {
       console.log("email updated to ", newEmail);
       this.base.passAuth.sendEmailVerification();
       alert("Please check your email and click the link to verify your email address: "+newEmail);
-      this.base.userSignout();
-      this.base.watchUser(this.nav, this.nav.root);
+      this.base.userSignout(this.nav, this.nav.root);
     }).catch( this.base.catchError );
   }
 

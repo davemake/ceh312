@@ -37,10 +37,10 @@
 
 		<div padding>
 			<div *ngIf="(email && password)">
-				<button ion-button full round large (click)="signin()">signin</button>
+				<button ion-button full large (click)="signin()">signin</button>
 			</div>
 			<div *ngIf="!(email && password)">
-				<button ion-button full round small disabled>signin</button>
+				<button ion-button full small disabled>signin</button>
 			</div>
 		</div>
 

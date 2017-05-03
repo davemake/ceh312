@@ -10,77 +10,50 @@
       <ion-icon name="menu"></ion-icon>
     </button>
     <ion-title text-capitalize>
-      hosts
+      <span *ngIf="!mode">
+        hosts
+      </span>
+      <span *ngIf="mode=='new'">
+        new host
+      </span>
     </ion-title>
+    <ion-buttons end>
+      <button ion-button *ngIf="!mode" (click)="newItem()">new</button>
+    </ion-buttons>
   </ion-navbar>
 </ion-header>
 <ion-content padding>
 
+
 	<ion-list *ngIf="!mode">
-		<ion-item>
-			<button ion-button full large (click)="newItem()">new host</button>
-		</ion-item>
+    <ion-item *ngFor="let i of hosts | async">
+      {{i.path}}
+      <button ion-button (click)="read(i)">Read</button>
+      <button ion-button (click)="destroy(i)">Delete</button>
+    </ion-item>
 	</ion-list>
 
-	<ion-list *ngIf="mode=='new'" text-center>
-
-    <ion-list-header>
-      <div text-uppercase>
-        please upload files
-      </div>
-    </ion-list-header>
+	<ion-list *ngIf="item && modeRead" text-center>
     <ion-item>
+      images: {{item.images}},
+      files: {{item.files}},
+      host_family_name: {{item.host_family_name}},
+      county: {{item.county}},
+      city: {{item.city}},
+      keywords: {{item.keywords}},
+      statement: {{item.statement}}
+      <button ion-button (click)="destroy(item)">Delete</button>
+    </ion-item>
+	</ion-list>
+
+	<ion-list *ngIf="item && modeNew" text-center>
+    <ion-item>
+      <label ion-label text-capitalize>Upload Files & Images</label>
       <input type="file" (change)="createByFiles()" multiple><br>
     </ion-item>
-
 	</ion-list>
 
-	<!--input type="file" (change)="upload()" multiple><br>
-
-	<ion-list *ngIf="!host">
-		<ion-item *ngFor="let h of hosts | async" (click)="hostPage(h.$key)">
-			key: {{h.key}}
-		</ion-item>
-	</ion-list>
-	
-	<ion-item *ngFor="let i of images | async">
-		{{imageId(i)}}<br>
-		<button ion-button (click)="read(i.$key)">Read</button>
-		<button ion-button (click)="destroyImage(i)">Delete</button>
-	</ion-item-->
-  `
-	<ion-list *ngIf="mode">
-		<ion-item>
-			<button ion-button full round large (click)="cancel()">cancel</button>
-		</ion-item>
-	</ion-list>
-
-	<ion-list>
-    <ion-list-header text-uppercase>
-      host
-    </ion-list-header>
-    <ion-item *ngIf="host">
-      {{host.path}}<br>
-      {{host.$key}}
-    </ion-item>
-	</ion-list>
-
-	<ion-list>
-    <ion-list-header text-uppercase>
-      hosts
-    </ion-list-header>
-    <ion-item *ngFor="let i of hosts | async">
-      {{i.$key}}<br>
-    </ion-item>
-	</ion-list>
-
-	<ion-list>
-    <ion-list-header text-uppercase>
-      images
-    </ion-list-header>
-    <ion-item *ngFor="let i of images | async">
-      {{i.$key}}<br>
-    </ion-item>
+	<ion-list *ngIf="item && modeEdit" text-center>
 	</ion-list>
 
 </ion-content>

@@ -11,31 +11,12 @@
 						<ion-icon name="menu"></ion-icon>
 				</button>
 				<ion-title text-capitalize>
-						<span *ngIf="user">
-							{{user.email}}
-							{{user.role}}
-						</span>
-						<span *ngIf="user && user.emailVerified">
-							email-verified
-						</span>
+					user
 				</ion-title>
 		</ion-navbar>
 </ion-header>
 
 
 <ion-content padding>
-
-	<div *ngIf="user">
-		<ion-list>
-			<ion-list-header text-center>
-				<h1  text-uppercase> menu</h1>
-			</ion-list-header>
-			<ion-item *ngFor="let p of pages">
-				<button ion-button full large (click)="openPage(p)">
-					{{p.title}}
-				</button>
-			</ion-item>
-		</ion-list>
-	</div>
 
 </ion-content>

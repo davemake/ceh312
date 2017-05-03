@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 import { IonicPage, Platform, Nav, NavParams } from 'ionic-angular';
+import { UserPage } from "../user/user";
+import { TasksPage } from "../tasks/tasks";
+import { HostsPage } from "../hosts/hosts";
 import { Base } from "../../providers/base";
 
 
@@ -17,11 +20,9 @@ import { Base } from "../../providers/base";
 export class DevelopersPage {
 
 	user: any;
-	role: any;
-  selectedItem: any;
-  icons: string[];
-  items: Array<{title: string, note: string, icon: string}>;
+  pages: Array<{title: string, component: any}>;
 
+// constructor
   constructor(
 		public nav: Nav, 
 		public params: NavParams,
@@ -29,26 +30,23 @@ export class DevelopersPage {
 		public base: Base
   ) {
 		this.user = this.base.user;
-    this.role = this.user.role;
-    this.selectedItem = params.get('item');
-    this.icons = ['flask', 'wifi', 'beer', 'football', 'basketball', 'paper-plane',
-    'american-football', 'boat', 'bluetooth', 'build'];
-    this.items = [];
-    for (let i = 1; i < 11; i++) {
-      this.items.push({
-        title: 'Item ' + i,
-        note: 'This is item #' + i,
-        icon: this.icons[Math.floor(Math.random() * this.icons.length)]
-      });
-    }
+    this.setPages();
+  }
+// end constructor
+
+  setPages() {
+    this.pages = [
+      { title: 'Home', component: UserPage },
+      { title: 'Hosts', component: HostsPage },
+      { title: 'Tasks', component: TasksPage }
+    ];
   }
 
-  itemTapped(event, item) {
-    // That's right, we're pushing to ourselves!
-    this.nav.push(DevelopersPage, {
-      item: item
-    });
-  }
+	openPage(page) {
+    // Reset the content nav to have just this page
+    // we wouldn't want the back button to show in this scenario
+    this.nav.push(page.component);
+	}
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad DevelopersPage');

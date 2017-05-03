@@ -33,8 +33,7 @@ export class SignoutPage {
   }
 
 	signout() {
-		this.base.userSignout();
-		this.base.watchUser(this.nav, this.nav.root);
+		this.base.userSignout(this.nav, this.nav.root);
 	}
   
   ionViewDidLoad() {

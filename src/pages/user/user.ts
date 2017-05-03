@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
-import { IonicPage, Nav } from 'ionic-angular';
+import { IonicPage, Platform, Nav, NavParams } from 'ionic-angular';
+import { TasksPage } from "../tasks/tasks";
+import { HostsPage } from "../hosts/hosts";
+import { DevelopersPage } from "../developers/developers";
 import { Base } from "../../providers/base";
 
 /**
@@ -28,10 +31,21 @@ export class UserPage {
   user: any;
 
   constructor(
-      public navCtrl: Nav,
-      public base: Base
-    ) {
-      this.user = this.base.user;
+    public nav: Nav, 
+    public params: NavParams,
+    public platform: Platform, 
+    public base: Base,
+  ) {
+    let role = this.params.get('role');
+    if (role) {
+      switch (role) {
+        case "host": this.nav.setRoot(HostsPage); break;
+        case "developer": this.nav.setRoot(DevelopersPage); break;
+        default: this.nav.setRoot(TasksPage); break;
+      }
+    } else {
+      this.base.rememberUser(this.nav, UserPage);
     }
-
+  }
+  
 }
