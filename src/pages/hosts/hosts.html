@@ -34,15 +34,21 @@
 	</ion-list>
 
 	<ion-list *ngIf="item && modeRead" text-center>
-    <ion-item>
-      images: {{item.images}},
+    <button ion-item large>
+      images: {{item.images}}
+    </button>
+    <button ion-item large>
       files: {{item.files}},
       host_family_name: {{item.host_family_name}},
       county: {{item.county}},
       city: {{item.city}},
       keywords: {{item.keywords}},
       statement: {{item.statement}}
-      <button ion-button (click)="destroy(item)">Delete</button>
+    </button>
+    <ion-item>
+      <ion-buttons end>
+        <button ion-button small (click)="destroy(item)">Delete</button>
+      </ion-buttons>
     </ion-item>
 	</ion-list>
 
