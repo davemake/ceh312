@@ -10,70 +10,22 @@
       <ion-icon name="menu"></ion-icon>
     </button>
     <ion-title text-capitalize>
-      <span *ngIf="!mode">hosts</span>
-      <span *ngIf="modeNew">new host</span>
-      <span *ngIf="modeRead">host</span>
+      hosts
     </ion-title>
     <ion-buttons end>
-      <button ion-button *ngIf="!mode" (click)="newItem()">new</button>
+      <button ion-button *ngIf="!mode" (click)="create()">new</button>
     </ion-buttons>
   </ion-navbar>
 </ion-header>
 <ion-content padding>
 
 
-	<ion-list *ngIf="!mode">
-    <ion-item *ngFor="let i of hosts | async">
-      {{i.path}}
-      <button ion-button (click)="read(i)">Read</button>
-      <button ion-button (click)="destroy(i)">Delete</button>
-    </ion-item>
-	</ion-list>
+	<ion-list>
+    <button ion-item *ngFor="let i of hosts | async" (click)="read(i.key)">
+      {{i.key}}
+    </button>
+  </ion-list>
 
-	<ion-list *ngIf="item && modeRead">
 
-    <button ion-item *ngIf="!edit('images')" (click)="setEdit('images')">
-      upload images
-    </button>
-    <ion-item *ngIf="edit('images')">
-      <input type="file" (change)="upload()" multiple><br>
-    </ion-item>
-    <div *ngIf="images">
-      <button ion-item *ngFor="let i of images">
-        {{i.path}}/{{i.name}}
-      </button>
-    </div>
-
-    <button ion-item *ngIf="!edit('images')" (click)="setEdit('images')">
-      files: {{item.files}}
-    </button>
-    <button ion-item *ngIf="!edit('host_family_name')" (click)="setEdit('host_family_name')">
-      host_family_name: {{item.host_family_name}
-    </button>
-    <button ion-item *ngIf="!edit('county')" (click)="setEdit('county')">
-      county: {{item.county}}
-    </button>
-    <button ion-item *ngIf="!edit('city')" (click)="setEdit('city')">
-      city: {{item.city}}
-    </button>
-    <button ion-item *ngIf="!edit('keywords')" (click)="setEdit('keywords')">
-      keywords: {{item.keywords}}
-    </button>
-    <button ion-item *ngIf="!edit('statement')" (click)="setEdit('statement')">
-      statement: {{item.statement}}
-    </button>
-    <ion-item>
-      <ion-buttons end>
-        <button ion-button small (click)="destroy(item)">Delete</button>
-      </ion-buttons>
-    </ion-item>
-	</ion-list>
-
-	<ion-list *ngIf="item && modeNew" text-center>
-    <ion-item>
-      <label ion-label text-capitalize>Upload Files & Images</label>
-      <input type="file" (change)="createByFiles()" multiple><br>
-    </ion-item>
-	</ion-list>
 
 </ion-content>

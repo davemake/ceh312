@@ -40,7 +40,8 @@ export class UserPage {
     if (role) {
       switch (role) {
         case "host": this.nav.setRoot(HostsPage); break;
-        case "developer": this.nav.setRoot(DevelopersPage); break;
+        //case "developer": this.nav.setRoot(DevelopersPage); break;
+        case "developer": this.nav.setRoot(HostsPage); break;
         default: this.nav.setRoot(TasksPage); break;
       }
     } else {

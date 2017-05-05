@@ -58,18 +58,22 @@ export class Base {
 		this.auth = this.afa.auth();
 		this.database = this.afa.database();
 		this.storage = this.afa.storage();
-		this.users = this.afd.list("/users");
-		this.logs = this.afd.list("/users");
-		this.hosts = this.afd.list("/hosts");
-		this.students = this.afd.list("/students");
-		this.volunteers = this.afd.list("/volunteers");
-		this.developers = this.afd.list("/developers");
-		this.files = this.afd.list("/files");
-		this.images = this.afd.list("/images");
+		this.users = this.list("/users");
+		this.logs = this.list("/users");
+		this.hosts = this.list("/hosts");
+		this.students = this.list("/students");
+		this.volunteers = this.list("/volunteers");
+		this.developers = this.list("/developers");
+		this.files = this.list("/files");
+		this.images = this.list("/images");
 		this.isMobile = this.isMobileCheck();
-		this.auth.onAuthStateChanged( this.userChanged );
+		this.auth.onAuthStateChanged( this.updateUser );
     }
 // end constructor
+
+	list(path) {
+		return this.afd.list(path);
+	}
 
 	memorizeUser() {
 		let storage = this.ionicStorage;
@@ -128,7 +132,7 @@ export class Base {
 		}
 	}
 
-	uploadFiles(path) {
+	upload(path) {
 		let files = event.target['files'];
 		for (let i in files) {
 			let file = files[i];
@@ -157,24 +161,21 @@ export class Base {
 		let database_obj = {
 			created: (new Date).getTime(),
 			path: path_database,
-			name: name
+			name: name,
+			id: name.split(".")[0]
 		}
-		this.afd.list(path_database).push(database_obj);
+		let key = this.afd.list(path_database).push(database_obj).key;
+		this.update(path_database+"/"+key+"/key", key)
 	}
 
 	log(path, action) {
 		let user = this.user;
 		if (user) {
-
+			console.log(user.email, path, action);
 		}
-		// transfer path
-		// transfer mode
-		// transfer memo
-		// get location
-		// get time
 	}
 	
-	userChanged(passAuth) {
+	updateUser(passAuth) {
 		window.thisBase.passAuth = passAuth;
 		if (passAuth) {
 			let userAuth = window.thisBase.userAuth = JSON.parse(JSON.stringify(passAuth));
@@ -281,56 +282,73 @@ export class Base {
 	
 	create(path) {
 		let objs = this.afd.list(path);
-		let obj = {
-			created: (new Date).getTime(),
-			key: '',
-			path: ''
-		};
-		obj.key = objs.push(obj).key;
-		obj.path = path+"/"+obj.key;
-    	this.log(obj.path, "create");
-		this.database.ref(obj.path).set(obj).catch( this.catchError );
-		return obj;
+		let obj = {created: (new Date).getTime()};
+		let key = objs.push(obj).key;
+		path += "/"+key;
+		this.update(path+"/path", path);
+		this.update(path+"/key", key);
+    	this.log(path, "create");
+		obj = this.read(path);
+		console.log(obj);
+		this.log(path, "create")
 	}
 	
 	read(path) {
 		window.thisBase.snapshot = null;
 		window.thisBase.database.ref(path).on('value', (snapshot) => {
-			window.thisBase.snapshot = snapshot.val();
+			let obj = snapshot.val();
+			let objs = [];
+			if (typeof(obj)=="object") {
+				for (let i in obj) {
+					objs.push(obj[i]);
+				}
+				window.thisBase.snapshot = objs;
+			} else {
+				window.thisBase.snapshot = obj;
+			}
 		}, window.thisBase.catchError);
 		return window.thisBase.snapshot;
 	}
 
 	update(path, data) {
-		debugger;
-	}
-
-	refDatabase(path, key) {
-		return this.database.ref(path+'/'+key);
-	}
-
-	refStorage(path, key) {
-		return this.storage.ref(path+'/'+key);
+		this.database.ref(path).set(data).catch( this.catchError );
+    	this.log(path, "update");
 	}
 
 	destroy(path) {
 		this.database.ref(path).delete();
-		debugger;
 		// check if storage
 		// destroy storage
 	}
 
-	imageId(i) {
-		let storageRef = this.storage.ref('images/'+i.name);
-		let key = i.$key;
-		//let name = i.name;
-		storageRef.getDownloadURL().then( (url)=> {
-			if (document.getElementById(key)) {
-				document.getElementById(key).setAttribute('src', url);
+	getUrl(i) {
+debugger;
+		let path_name = i.path+"/"+i.name;
+debugger;
+		let ref = this.storage.ref(path_name);
+debugger;
+		ref.getDownloadURL().then( (url)=> {
+debugger;
+			let this2 = window.thisBase;
+debugger;
+			let id = this2.getUrlId(url);
+debugger;
+			if (document.getElementById(id)) {
+debugger;
+				document.getElementById(id).setAttribute('src', url);
+debugger;
 			};
-		});
-		return key;
-	}	
+debugger;
+		}).catch( this.catchError );
+debugger;
+	}
+
+	getUrlId(url) {
+		let names = url.split("?")[0].split("%2F");
+		let name = names[names.length-1];
+		let id = names[names.length-1].split(".")[0];
+		return id;
+	}
 
 	randomName(fullname) {
 		let name;

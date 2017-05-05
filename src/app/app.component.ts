@@ -9,6 +9,7 @@ import { UserPage } from '../pages/user/user';
 import { SignoutPage } from '../pages/signout/signout';
 import { TasksPage } from '../pages/tasks/tasks';
 import { HostsPage } from '../pages/hosts/hosts';
+import { HostPage } from '../pages/host/host';
 import { DevelopersPage } from '../pages/developers/developers';
 import { Base } from '../providers/base';
 

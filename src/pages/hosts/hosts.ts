@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { AngularFire, AngularFireDatabase, FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2';
 import { IonicPage, Platform, Nav, NavParams } from 'ionic-angular';
+import { HostPage } from "../host/host";
 import { Base } from "../../providers/base";
 
-declare var cordova: any;
+declare var window: any;
 
 /**
  * Generated class for the HostsPage page.
@@ -23,13 +24,13 @@ export class HostsPage {
   key: any;
   mode: any;
   modeNew: any;
-  modeRead: any;
+  reading: any;
   item: any;
   item_old: any;
   items: any;
   isMobile: any;
   host: any;
-  hosts: any;
+  hosts: FirebaseListObservable<any>;
   host_family_name: any;
   county: any;
   city: any;
@@ -37,8 +38,8 @@ export class HostsPage {
   statement: any;
 	images: any;
 	files: any;
-  editModes: any=[];
-// end vars
+  edits: any=[];
+// 
 
 // constructor
   constructor(
@@ -47,34 +48,24 @@ export class HostsPage {
 		public platform: Platform, 
 		public base: Base,
   ) {
+    window.thisHosts = this;
     this.isMobile = this.base.isMobile;
 		this.user = this.base.user;
     this.hosts = this.base.afd.list("/hosts");
     this.setMode(this.params.get('mode'));
-    this.setItem(this.params.get('path'));
   }
-// end constructor
+// 
 
   setMode(mode) {
     this.mode = mode;
-    this.modeNew = null;
-    this.modeRead = null;
-    this.editModes = [];
+    this.reading = null;
+    this.edits = [];
     switch (mode) {
-      case "new":
-        this.item = {
-          host_family_name: null,
-          county: null,
-          city: null,
-          keywords: null,
-          statement: null
-        };
-        this.images = null;
-        this.files = null;
-        this.modeNew = true;
-        break;
       case "read": 
-        this.modeRead = true; 
+        this.setItem(this.params.get('path'));
+        if (this.item) {
+          this.reading = true; 
+        }
         break;
       default: 
         this.mode = null;
@@ -85,27 +76,17 @@ export class HostsPage {
     }
   }
 
-  setEdit(mode) {
-    if (mode) {
-      if (!this.editModes.includes(mode)) {
-        this.editModes.push(mode);
-      }
-    } else {
-      this.editModes = [];
-    }
-  }
-
-  edit(mode) {
-    return this.editModes.includes(mode);
-  }
-
   setItem(path) {
     if (path) {
       this.item = this.base.read(path);
       this.images = [];
       if (this.item.images) {
         for (var i in this.item.images) {
-          this.images.push(this.item.images[i]);
+          let obj = this.item.images[i];
+          this.images.push(obj);
+          let path_name = obj.path+"/"+obj.name;
+          let ref = this.base.storage.ref(path_name);
+          ref.getDownloadURL().then( this.setImagesUrl ).catch( this.base.catchError );
         }
       }
       this.files = [];
@@ -117,34 +98,47 @@ export class HostsPage {
     }
   }
 
-  newItem() {
-    this.nav.push(HostsPage, {mode: 'new'});
+  setImagesUrl(url) {
+    let names = url.split("?")[0].split("%2F");
+    let name = names[names.length-1];
+    let id = names[names.length-1].split(".")[0];
+    let this2 = window.thisHosts;
+    let images = this2.images;
+    for (var i in this2.images) {
+      let name2 = images[i].name;
+      if (name==name2) {
+        images[i].url = url;
+      }
+    }
   }
 
-  read(item) {
-    this.nav.push(HostsPage, {mode: 'read', path: item.path});
+  edit(mode) {
+    if (mode) {
+      this.edits = [mode];
+    } else {
+      this.edits = [];
+    }
   }
 
-  destroy(item) {
-    this.base.destroy(item.path);
-    this.setMode(null);
+  editing(mode) {
+    return this.edits.includes(mode);
   }
 
-  createByFiles() {
+  fileId(i) {
+    //...
+  }
+
+  create() {
     if (this.user) {
       this.item = this.base.create("hosts");
-      this.base.uploadFiles(this.item.path);
-      this.nav.pop();
-      this.read(this.item);
+      if (this.item) {
+        this.nav.push(HostsPage, {mode: 'read', path: this.item.path});
+      }
     }
   }
 
-  upload() {
-    if (this.user && this.item) {
-      this.base.uploadFiles(this.item.path);
-      this.nav.pop();
-      this.read(this.item);   
-    }
+  read(key) {
+    this.nav.push(HostPage, {key: key});
   }
 
   ionViewDidLoad() {
