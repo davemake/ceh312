@@ -43,16 +43,21 @@ export class HostPage {
   imagesWatch: any;
   imagesNotReady: any;
   url: any;
+	pdf: any;
+  testUrl: any;
 // 
 
 // constructor
+  // https://www.npmjs.com/package/cordova-pdf-generator
+  // $ cordova plugin add cordova-pdf-generator
   constructor(
 		public nav: Nav, 
 		public params: NavParams,
 		public platform: Platform, 
-		public base: Base,
+		public base: Base
   ) {
     window.thisHost = this;
+    this.pdf = window.pdf;
     this.key = this.params.get('key');
     this.path = "hosts/"+this.key;
     this.family_name = this.base.read(this.path+"/family_name");
@@ -78,9 +83,29 @@ export class HostPage {
   }
 //
 
-  pdf() {
-    alert('pdf');
-  }
+	print() {
+		if (this.pdf) {
+      let html = "<div style='height:100%;background-color:yellow'><h1><center><img src='";
+      html += this.testUrl;
+      html += "'></img></center></h1></div>";
+			html += "<div style='height:100%'><h1><center>Hello World2</center></h1></div>";
+			html += "<div style='height:100%'><h1><center>Hello World3</center></h1></div>";
+			this.pdf.htmlToPDF({
+				data: html,
+				documentSize: "A",
+				landscape: "portrait",
+				type: "base64"
+			});
+		} else {
+      alert("Pdf works in android or ios");
+    }
+	}
+
+	test() {
+		this.platform.ready().then( ()=> {
+			this.print()
+		});
+	}
 
   storageList(path) {
     return <FirebaseListObservable<any>> this.base.list(path).map( (items) => {
@@ -90,6 +115,7 @@ export class HostPage {
         ref2.then( (url) => {
           let id = window.thisHost.base.getUrlId(url);
           window.thisHost.imagesUrls[id] = url;
+          window.thisHost.testUrl = url;
         }).catch( console.log );
         return item;
       });
@@ -109,16 +135,6 @@ export class HostPage {
   loadUrlLater( item ) {
     if ( !this.loadUrlLaterItems.includes( item ) ) {
       this.loadUrlLaterItems.push(item);
-    }
-  }
-
-  loadUrlLaterProcessStart( items, ref ) {
-    if ( this.loadUrlLaterItems.length ) {
-      for ( let i in this.loadUrlLaterItems ) {
-        let item = this.loadUrlLaterItems[i];
-        let ref = window.thisHost.base.storage.ref(item.path+"/"+item.name);
-        ref.getDownloadURL().then( this.loadUrlLaterProcessUrl ).catch( console.log );
-      }
     }
   }
 
