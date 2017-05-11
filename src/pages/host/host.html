@@ -25,9 +25,8 @@
       <ion-input type="text" [(ngModel)]="county" (change)="update('county')" text-uppercase></ion-input>
     </ion-item>
     <button ion-item *ngFor="let i of images" text-wrap>
-      <img src="" id="{{getUrl(i)}}">
+        <img src="{{loadUrl(i)}}" id="{{i.id}}">
     </button>
-    <button ion-item (click)="getUrlsFromImagePaths()">load</button>
     <ion-item>
       <input type="file" (change)="upload()" multiple><br>
     </ion-item>

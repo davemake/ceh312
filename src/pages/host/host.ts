@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
 import { AngularFire, AngularFireDatabase, FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2';
 import { IonicPage, Platform, Nav, NavParams } from 'ionic-angular';
+
+import 'rxjs/add/operator/map'; // you might need to import this, or not depends on your setup
+
 import { Base } from "../../providers/base";
 
 declare var window: any;
@@ -22,17 +25,24 @@ export class HostPage {
 	user: any;
   isMobile: any;
   family_name: FirebaseObjectObservable<any>;
-  images: any;
+  files: FirebaseListObservable<any>;
+  images: any=[];
+  loadUrlLaterItems: any=[];
+  imagesList: FirebaseListObservable<any>;
+  imagesUrls: any={};
+  imagesUrlsWatch: any;
   county: any;
   city: any;
   keywords: any;
   statement: any;
-	files: any;
   edits: any=[];
   key: any;
   path: any;
   imagePaths: any=[];
   pageIsLoaded: any;
+  imagesWatch: any;
+  imagesNotReady: any;
+  url: any;
 // 
 
 // constructor
@@ -50,32 +60,86 @@ export class HostPage {
     this.city = this.base.read(this.path+"/city");
     this.keywords = this.base.read(this.path+"/keywords");
     this.statement = this.base.read(this.path+"/statement");
-    this.images = this.base.read(this.path+"/images");
-    this.files = this.base.list(this.path+"/files");
+
+    this.imagesList = this.storageList(this.path+"/images");
+    this.imagesList.subscribe( (images)=>{
+      let urls = window.thisHost.imagesUrls;
+      for (let i in images) {
+        window.thisHost.images[i] = images[i];
+      }
+    });
+    setInterval( ()=>{
+      this.loadUrlLaterProcess();
+    }, 1000)
+
     this.isMobile = this.base.isMobile;
 		this.user = this.base.user;
-
     
   }
 //
 
-  getUrl(i) {
-    let path = i.path+"/"+i.name;
-    if (!window.thisHost.imagePaths.includes(path)) {
-      window.thisHost.imagePaths.push(path);
+  storageList(path) {
+    return <FirebaseListObservable<any>> this.base.list(path).map( (items) => {
+      return items.map( (item) => {
+        let ref = window.thisHost.base.storage.ref(item.path+"/"+item.name);
+        let ref2 = ref.getDownloadURL();
+        ref2.then( (url) => {
+          let id = window.thisHost.base.getUrlId(url);
+          window.thisHost.imagesUrls[id] = url;
+        }).catch( console.log );
+        return item;
+      });
+    });
+  }
+
+  loadUrl( item ) {
+    let url = this.imagesUrls[item.id];
+    if ( url ) {
+      return url;
+    } else {
+      this.loadUrlLater( item );
+      return null;
     }
-    return i.id;
   }
 
-  getUrlsFromImagePaths() {
-      while (window.thisHost.imagePaths.length>0) {
-        let ref = this.base.storage.ref(window.thisHost.imagePaths.pop());
-        ref.getDownloadURL().then( this.getUrlToId ).catch( this.base.catchError );
+  loadUrlLater( item ) {
+    if ( !this.loadUrlLaterItems.includes( item ) ) {
+      this.loadUrlLaterItems.push(item);
+    }
+  }
+
+  loadUrlLaterProcess() {
+    if ( this.loadUrlLaterItems.length ) {
+      for ( let i in this.loadUrlLaterItems ) {
+        let item = this.loadUrlLaterItems[i];
+        let ref = window.thisHost.base.storage.ref(item.path+"/"+item.name);
+        ref.getDownloadURL().then( this.loadUrlLaterProcessUrl ).catch( console.log );
       }
+    }
   }
 
-  getUrlToId(url) {
+  loadUrlLaterProcessUrl(url) {
     let id = window.thisHost.base.getUrlId(url);
+    window.thisHost.loadUrlLaterUpdateAttrib(id, url);
+    window.thisHost.loadUrlLaterRemoveItem(id);
+  }
+
+  loadUrlLaterRemoveItem(id) {
+    for ( let i in window.thisHost.loadUrlLaterItems ) {
+      let item = this.loadUrlLaterItems[i];
+      if ( item.id==id ) {
+        if ( window.thisHost.loadUrlLaterItems.length==1 ) {
+          window.thisHost.loadUrlLaterItems = [];
+        } else {
+          window.thisHost.loadUrlLaterItems.splice(i, i);
+        }
+      }
+      console.log("load", item.path+"/"+item.name);
+    }
+  }
+
+  loadUrlLaterUpdateAttrib(id, url) {
+    window.thisHost.imagesUrls[id] = url;
     if (document.getElementById(id)) {
       document.getElementById(id).setAttribute('src', url);
     }
@@ -92,13 +156,11 @@ export class HostPage {
   upload() {
     if (this.path) {
       this.base.upload(this.path);
-      this.images = this.base.read(this.path+"/images");
     }
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad HostPage');
-    this.getUrlsFromImagePaths();
   }
 
 }

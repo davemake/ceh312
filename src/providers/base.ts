@@ -149,23 +149,24 @@ export class Base {
 		let naming = name.split(".");
 		let last = naming.length-1;
 		let type = naming[last];
-		if ("jpg jpeg tiff gif bmp png svg".match(type)) {
-			path_storage = path+"/images/"+name;
-			path_database = path+"/images";
-		} else {
+		if ("pdf".match(type)) {
 			path_storage = path+"/files/"+name;
 			path_database = path+"/files";
+		} else {
+			path_storage = path+"/images/"+name;
+			path_database = path+"/images";
 		};
 		let ref = this.storage.ref(path_storage);
 		ref.put(file);
 		let database_obj = {
 			created: (new Date).getTime(),
+			uploaded: null,
 			path: path_database,
 			name: name,
 			id: name.split(".")[0]
 		}
 		let key = this.afd.list(path_database).push(database_obj).key;
-		this.update(path_database+"/"+key+"/key", key)
+		this.update(path_database+"/"+key+"/key", key);
 	}
 
 	log(path, action) {
