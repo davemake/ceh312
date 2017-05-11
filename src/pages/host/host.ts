@@ -85,10 +85,8 @@ export class HostPage {
 
 	print() {
 		if (this.pdf) {
-      let html = "<div style='height:100%;background-color:yellow'><h1><center><img src='";
-      html += this.testUrl;
-      html += "'></img></center></h1></div>";
-			html += "<div style='height:100%'><h1><center>Hello World2</center></h1></div>";
+      let html = "<div style='height:100%;background-color:yellow'><h1><center><img src='"+this.testUrl+"'></img><br><a href='"+this.testUrl+"'>"+this.testUrl+"</a></center></h1></div>";
+			html += "<div style='height:100%'><h1><center><a href='"+this.testUrl+"'>"+this.testUrl+"</a></center></h1></div>";
 			html += "<div style='height:100%'><h1><center>Hello World3</center></h1></div>";
 			this.pdf.htmlToPDF({
 				data: html,
