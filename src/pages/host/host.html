@@ -24,6 +24,9 @@
       <ion-label floating text-capitalize>county</ion-label>
       <ion-input type="text" [(ngModel)]="county" (change)="update('county')" text-uppercase></ion-input>
     </ion-item>
+    <ion-item>
+      <button ion-button (click)="pdf()">pdf</button>
+    </ion-item>
     <button ion-item *ngFor="let i of images" text-wrap>
         <img src="{{loadUrl(i)}}" id="{{i.id}}">
     </button>

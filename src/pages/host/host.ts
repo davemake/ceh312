@@ -78,6 +78,10 @@ export class HostPage {
   }
 //
 
+  pdf() {
+    alert('pdf');
+  }
+
   storageList(path) {
     return <FirebaseListObservable<any>> this.base.list(path).map( (items) => {
       return items.map( (item) => {
@@ -105,6 +109,16 @@ export class HostPage {
   loadUrlLater( item ) {
     if ( !this.loadUrlLaterItems.includes( item ) ) {
       this.loadUrlLaterItems.push(item);
+    }
+  }
+
+  loadUrlLaterProcessStart( items, ref ) {
+    if ( this.loadUrlLaterItems.length ) {
+      for ( let i in this.loadUrlLaterItems ) {
+        let item = this.loadUrlLaterItems[i];
+        let ref = window.thisHost.base.storage.ref(item.path+"/"+item.name);
+        ref.getDownloadURL().then( this.loadUrlLaterProcessUrl ).catch( console.log );
+      }
     }
   }
 
