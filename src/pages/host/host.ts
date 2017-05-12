@@ -83,24 +83,20 @@ export class HostPage {
   }
 //
 
-	test() {
-		this.platform.ready().then( ()=> {
-			this.print()
-		});
-	}
-
 	print() {
-		if (this.pdf) {
-      let html = document.getElementById("blablabla")['innerHTML'];
-			this.pdf.htmlToPDF({
-				data: html,
-				documentSize: "A",
-				landscape: "portrait",
-				type: "base64"
-			});
-		} else {
-      alert("Pdf works in android or ios");
-    }
+		this.platform.ready().then( ()=> {
+      if (this.pdf) {
+        let html = document.getElementById("content_pdf")['innerHTML'];
+        this.pdf.htmlToPDF({
+          data: html,
+          documentSize: "A",
+          landscape: "portrait",
+          type: "share"
+        });
+      } else {
+        alert("Pdf works in android or ios");
+      }
+		});
 	}
 
   storageList(path) {
@@ -143,6 +139,10 @@ export class HostPage {
   loadUrl( item ) {
     let url = this.imagesUrls[item.id];
     if ( url ) {
+      // Get raw image data
+      //let uri1 = canvas.toDataURL(url).replace(/^data:image\/(png|jpg);base64,/, '');
+      // ... or get as Data URI
+      //let uri2 = canvas.toDataURL(url);
       return url;
     } else {
       this.loadUrlLater( item );

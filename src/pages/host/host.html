@@ -22,20 +22,47 @@
     </ion-item>
     <ion-item>
       <ion-label floating text-capitalize>county</ion-label>
-      <ion-input type="text" [(ngModel)]="county" (change)="update('county')" text-uppercase></ion-input>
+      <ion-input type="text" [(ngModel)]="county" (change)="update('county')" text-capitalize></ion-input>
     </ion-item>
     <ion-item>
-      <button ion-button (click)="test()">test</button>
+      <ion-label floating text-capitalize>city</ion-label>
+      <ion-input type="text" [(ngModel)]="city" (change)="update('city')" text-capitalize></ion-input>
     </ion-item>
-    <div id="blablabla">
-      <div *ngFor="let i of images">
-        <div style='height:100%'>
-          <img src="assets/img/header.png">
-          <img src="{{loadUrl(i)}}" id="{{i.id}}" alt="{{i.name}}">
-          <ion-img src="{{loadUrl(i)}}" id="{{i.id}}" alt="{{i.name}}"></ion-img>
-        </div>
-      </div>
-    </div>
+    <ion-item>
+      <ion-label floating text-capitalize>statement</ion-label>
+      <ion-textarea [(ngModel)]="statement" (change)="update('statement')" text-wrap></ion-textarea>
+    </ion-item>
+    <ion-item>
+      <ion-label floating text-capitalize>keywords</ion-label>
+      <ion-input type="text" [(ngModel)]="keywords" (change)="update('keywords')" text-capitalize text-wrap></ion-input>
+    </ion-item>
+    <ion-item>
+      <button ion-button (click)="print()">print & pdf</button>
+    </ion-item>
+	</ion-list>
+
+
+	<ion-list style="width:850px;height:1100px">
+    <img
+      src="assets/img/header.png" 
+      id="CEH_Header" 
+      alt="CEH_Header"
+      width="100%"
+      cache="true"
+    >
+    <ion-item id="content_pdf" style='height:100%'>
+      <ion-list>
+        <ion-item *ngFor="let i of images">
+          <img
+            src="{{loadUrl(i)}}" 
+            id="{{i.id}}" 
+            alt="{{i.name}}"
+            width="100%"
+            cache="true"
+          >
+        </ion-item>
+      </ion-list>
+    </ion-item>
     <ion-item>
       <input type="file" (change)="upload()" multiple><br>
     </ion-item>
