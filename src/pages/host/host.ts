@@ -83,11 +83,15 @@ export class HostPage {
   }
 //
 
+	test() {
+		this.platform.ready().then( ()=> {
+			this.print()
+		});
+	}
+
 	print() {
 		if (this.pdf) {
-      let html = "<div style='height:100%;background-color:yellow'><h1><center><img src='"+this.testUrl+"'></img><br><a href='"+this.testUrl+"'>"+this.testUrl+"</a></center></h1></div>";
-			html += "<div style='height:100%'><h1><center><a href='"+this.testUrl+"'>"+this.testUrl+"</a></center></h1></div>";
-			html += "<div style='height:100%'><h1><center>Hello World3</center></h1></div>";
+      let html = document.getElementById("blablabla")['innerHTML'];
 			this.pdf.htmlToPDF({
 				data: html,
 				documentSize: "A",
@@ -99,12 +103,6 @@ export class HostPage {
     }
 	}
 
-	test() {
-		this.platform.ready().then( ()=> {
-			this.print()
-		});
-	}
-
   storageList(path) {
     return <FirebaseListObservable<any>> this.base.list(path).map( (items) => {
       return items.map( (item) => {
@@ -113,11 +111,33 @@ export class HostPage {
         ref2.then( (url) => {
           let id = window.thisHost.base.getUrlId(url);
           window.thisHost.imagesUrls[id] = url;
-          window.thisHost.testUrl = url;
         }).catch( console.log );
         return item;
       });
     });
+  }
+
+  fileToBase64( file ) {
+    let reader = new FileReader();
+    reader.readAsDataURL( file );
+    reader.onload = ( e )=>{
+      return e.target['result'];
+    };
+  }
+
+  loadBase64( item ) {
+    let url = this.imagesUrls[item.id];
+    if ( url ) {
+      let request = new XMLHttpRequest();
+      request.open('get', url, true);
+      request.responseType = 'blob';
+      request.send();
+      request.onload = ()=>{
+        return this.fileToBase64( request.response )
+      };
+    } else {
+      return null;
+    }
   }
 
   loadUrl( item ) {

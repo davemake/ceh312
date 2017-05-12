@@ -27,9 +27,15 @@
     <ion-item>
       <button ion-button (click)="test()">test</button>
     </ion-item>
-    <button ion-item *ngFor="let i of images" text-wrap>
-        <img src="{{loadUrl(i)}}" id="{{i.id}}">
-    </button>
+    <div id="blablabla">
+      <div *ngFor="let i of images">
+        <div style='height:100%'>
+          <img src="assets/img/header.png">
+          <img src="{{loadUrl(i)}}" id="{{i.id}}" alt="{{i.name}}">
+          <ion-img src="{{loadUrl(i)}}" id="{{i.id}}" alt="{{i.name}}"></ion-img>
+        </div>
+      </div>
+    </div>
     <ion-item>
       <input type="file" (change)="upload()" multiple><br>
     </ion-item>

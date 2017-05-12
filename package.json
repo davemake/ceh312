@@ -27,6 +27,7 @@
     "@ionic-native/text-to-speech": "^3.4.4",
     "@ionic/storage": "2.0.1",
     "angularfire2": "^2.0.0-beta.8",
+    "base64-img": "^1.0.3",
     "firebase": "^3.7.6",
     "html-pdf": "^2.1.0",
     "ionic-angular": "3.0.1",
