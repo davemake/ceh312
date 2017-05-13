@@ -193,8 +193,57 @@ export class HostPage {
     }
   }
 
-  update(attrib) {
+  update(attrib, process) {
+    switch (process) {
+      case "uppercase": this[attrib] = this.toUppercase(this.toTitleize(this[attrib])); break;
+      case "titleize": this[attrib] = this.toTitleize(this[attrib]); break;
+      case "capitalize": this[attrib] = this.toCapitalize(this[attrib]); break;
+      case "camelize": this[attrib] = this.toCamelize(this[attrib]); break;
+      case "paragraph": this[attrib] = this.toParagraph(this[attrib]); break;
+      case "keywords": this[attrib] = this.toKeywords(this[attrib]); break;
+    }
     this.base.update(this.path+"/"+attrib, this[attrib])
+  }
+
+  toParagraph(str) {
+    return str;
+  }
+
+  toParagraphs(str) {
+    return str;
+  }
+
+  toKeyword(str) {
+    return str;
+  }
+
+  toKeywords(str) {
+    return str;
+  }
+
+  toTitleize (str) {
+        str = this.toLowercase(str);
+        str = str.replace(/ and /g,' & ');
+        str = this.toCapitalize(str);
+        return str;
+  }
+
+  toLowercase (str) {
+    return str.toLowerCase()
+  }
+
+  toUppercase (str) {
+    return str.toUpperCase()
+  }
+
+  toCapitalize (str) {
+    return str.replace(/\w\S*/g, (txt)=>{
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    })
+  }
+
+  toCamelize (str) {
+    return this.toCapitalize(this.toLowercase(str)).replace(/ /g,'');
   }
 
   destroy() {

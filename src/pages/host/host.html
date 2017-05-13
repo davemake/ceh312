@@ -18,29 +18,27 @@
 	<ion-list>
     <ion-item>
       <ion-label floating text-capitalize>family name</ion-label>
-      <ion-input type="text" [(ngModel)]="family_name" (change)="update('family_name')"></ion-input>
+      <ion-input type="text" [(ngModel)]="family_name" (change)="update('family_name', 'uppercase')"></ion-input>
     </ion-item>
-    <!-- 
     <ion-item>
       <ion-label floating text-capitalize>county</ion-label>
-      <ion-input type="text" [(ngModel)]="county" (change)="update('county')" text-capitalize></ion-input>
+      <ion-input type="text" [(ngModel)]="county" (change)="update('county', 'titleize')"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label floating text-capitalize>city</ion-label>
-      <ion-input type="text" [(ngModel)]="city" (change)="update('city')" text-capitalize></ion-input>
+      <ion-input type="text" [(ngModel)]="city" (change)="update('city', 'titleize')"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label floating text-capitalize>statement</ion-label>
-      <ion-textarea [(ngModel)]="statement" (change)="update('statement')" text-wrap></ion-textarea>
+      <ion-textarea [(ngModel)]="statement" (change)="update('statement', 'paragraph')" text-wrap></ion-textarea>
     </ion-item>
     <ion-item>
       <ion-label floating text-capitalize>keywords</ion-label>
-      <ion-input type="text" [(ngModel)]="keywords" (change)="update('keywords')" text-capitalize text-wrap></ion-input>
+      <ion-input type="text" [(ngModel)]="keywords" (change)="update('keywords', 'keywords')" text-capitalize text-wrap></ion-input>
     </ion-item>
     <ion-item *ngIf="mobile">
       <button ion-button (click)="print()">print & pdf</button>
     </ion-item>
-    -->
     <ion-item>
       <input type="file" (change)="upload()" multiple><br>
     </ion-item>
