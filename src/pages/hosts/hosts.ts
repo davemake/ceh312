@@ -28,7 +28,7 @@ export class HostsPage {
   item: any;
   item_old: any;
   items: any;
-  isMobile: any;
+  mobile: any;
   host: any;
   hosts: FirebaseListObservable<any>;
   host_family_name: any;
@@ -49,7 +49,7 @@ export class HostsPage {
 		public base: Base,
   ) {
     window.thisHosts = this;
-    this.isMobile = this.base.isMobile;
+    this.mobile = this.base.mobile;
 		this.user = this.base.user;
     this.hosts = this.base.afd.list("/hosts");
     this.setMode(this.params.get('mode'));

@@ -18,8 +18,9 @@
 	<ion-list>
     <ion-item>
       <ion-label floating text-capitalize>family name</ion-label>
-      <ion-input type="text" [(ngModel)]="family_name" (change)="update('family_name')" text-uppercase></ion-input>
+      <ion-input type="text" [(ngModel)]="family_name" (change)="update('family_name')"></ion-input>
     </ion-item>
+    <!-- 
     <ion-item>
       <ion-label floating text-capitalize>county</ion-label>
       <ion-input type="text" [(ngModel)]="county" (change)="update('county')" text-capitalize></ion-input>
@@ -36,35 +37,42 @@
       <ion-label floating text-capitalize>keywords</ion-label>
       <ion-input type="text" [(ngModel)]="keywords" (change)="update('keywords')" text-capitalize text-wrap></ion-input>
     </ion-item>
-    <ion-item>
+    <ion-item *ngIf="mobile">
       <button ion-button (click)="print()">print & pdf</button>
+    </ion-item>
+    -->
+    <ion-item>
+      <input type="file" (change)="upload()" multiple><br>
     </ion-item>
 	</ion-list>
 
-
-	<ion-list style="width:850px;height:1100px">
-    <img
-      src="assets/img/header.png" 
-      id="CEH_Header" 
-      alt="CEH_Header"
-      width="100%"
-      cache="true"
-    >
-    <ion-item id="content_pdf" style='height:100%'>
-      <ion-list>
-        <ion-item *ngFor="let i of images">
-          <img
-            src="{{loadUrl(i)}}" 
-            id="{{i.id}}" 
-            alt="{{i.name}}"
-            width="100%"
-            cache="true"
-          >
-        </ion-item>
-      </ion-list>
+  <ion-list *ngFor="let i of images" style="width:850px;height:1000px">
+    <ion-list-header>
+      <img
+        src="/assets/img/header.png" 
+        id="header" 
+        alt="header"
+        width="100%"
+        cache="true"
+      >
+    </ion-list-header>
+    <ion-item>
+      <img
+        src="{{loadUrl(i)}}" 
+        id="{{i.id}}" 
+        alt="{{i.name}}"
+        width="100%"
+        cache="true"
+      >
     </ion-item>
     <ion-item>
-      <input type="file" (change)="upload()" multiple><br>
+      <img
+        src="/assets/img/footer.png" 
+        id="footer" 
+        alt="footer"
+        width="100%"
+        cache="true"
+      >
     </ion-item>
   </ion-list>
 

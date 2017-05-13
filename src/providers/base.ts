@@ -29,7 +29,7 @@ export class Base {
 	passAuth: any;
 	userAuth: any;
 	user: any;
-	isMobile: any;
+	mobile: any;
 
 	host: any;
 	student: any;
@@ -66,7 +66,7 @@ export class Base {
 		this.developers = this.list("/developers");
 		this.files = this.list("/files");
 		this.images = this.list("/images");
-		this.isMobile = this.isMobileCheck();
+		this.mobile = this.isMobileCheck();
 		this.auth.onAuthStateChanged( this.updateUser );
     }
 // end constructor

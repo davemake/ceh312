@@ -23,7 +23,7 @@ export class HostPage {
 
 // vars
 	user: any;
-  isMobile: any;
+  mobile: any;
   family_name: FirebaseObjectObservable<any>;
   files: FirebaseListObservable<any>;
   images: any=[];
@@ -77,7 +77,7 @@ export class HostPage {
       this.loadUrlLaterProcess();
     }, 1000)
 
-    this.isMobile = this.base.isMobile;
+    this.mobile = this.base.mobile;
 		this.user = this.base.user;
     
   }
