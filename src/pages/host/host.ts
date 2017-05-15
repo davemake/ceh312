@@ -193,27 +193,19 @@ export class HostPage {
     }
   }
 
-  update(attrib, process) {
-    switch (process) {
+  update(attrib, processing) {
+    switch (processing) {
       case "uppercase": this[attrib] = this.toUppercase(this.toTitleize(this[attrib])); break;
       case "titleize": this[attrib] = this.toTitleize(this[attrib]); break;
       case "capitalize": this[attrib] = this.toCapitalize(this[attrib]); break;
       case "camelize": this[attrib] = this.toCamelize(this[attrib]); break;
-      case "paragraph": this[attrib] = this.toParagraph(this[attrib]); break;
+      case "paragraphs": this[attrib] = this.toParagraphs(this[attrib]); break;
       case "keywords": this[attrib] = this.toKeywords(this[attrib]); break;
     }
     this.base.update(this.path+"/"+attrib, this[attrib])
   }
 
-  toParagraph(str) {
-    return str;
-  }
-
   toParagraphs(str) {
-    return str;
-  }
-
-  toKeyword(str) {
     return str;
   }
 
@@ -223,9 +215,22 @@ export class HostPage {
 
   toTitleize (str) {
         str = this.toLowercase(str);
-        str = str.replace(/ and /g,' & ');
+        str = this.toMinChars(str);
+        str = this.toMinSpace(str);
         str = this.toCapitalize(str);
         return str;
+  }
+
+  // replace large words with abbreviations and symbols
+  toMinChars(str) {
+    // replace " and " with " & "
+    str = str.replace(/ and /g,' & ');
+    return str;
+  }
+
+  // replace multiple spaces with single spaces
+  toMinSpace (str) {
+    return str.replace(/\s+/g,' ').trim();
   }
 
   toLowercase (str) {
