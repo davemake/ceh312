@@ -30,44 +30,111 @@
     </ion-item>
     <ion-item>
       <ion-label floating text-capitalize>statement</ion-label>
-      <ion-textarea [(ngModel)]="statement" (change)="update('statement', 'paragraph')" text-wrap></ion-textarea>
+      <ion-textarea [(ngModel)]="statement" (change)="update('statement', 'paragraphs')" text-wrap></ion-textarea>
+    </ion-item>
+    <ion-item>
+      <ion-label text-capitalize>pets</ion-label>
+      <ion-checkbox [(ngModel)]="keywords[pets]" disabled="false"></ion-checkbox>
+    </ion-item>
+    <ion-item *ngIf="mobile">
+      <button ion-button (click)="print()">print & pdf</button>
     </ion-item>
     <ion-item>
       <ion-label floating text-capitalize>keywords</ion-label>
       <ion-input type="text" [(ngModel)]="keywords" (change)="update('keywords', 'keywords')" text-capitalize text-wrap></ion-input>
-    </ion-item>
-    <ion-item *ngIf="mobile">
-      <button ion-button (click)="print()">print & pdf</button>
     </ion-item>
     <ion-item>
       <input type="file" (change)="upload()" multiple><br>
     </ion-item>
 	</ion-list>
 
+  <ion-grid>
+    <ion-row>
+      <ion-col col-1></ion-col>
+      <ion-col col-10>
+        <ion-row>
+          <ion-col>
+            <img
+              src="/assets/img/header.png" 
+              id="header" 
+              alt="header"
+              width="100%"
+              cache="true"
+            >
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-row>
+              <ion-col>
+                <ion-row>
+                  <ion-col>
+                    <strong>Host Family:</strong>
+                    <strong>{{family_name}}</strong>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col>
+                    <strong>County:</strong>
+                    {{county}}
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col>
+                    <strong>City:</strong>
+                    {{city}}
+                  </ion-col>
+                </ion-row>
+              </ion-col>
+              <ion-col>
+                2
+              </ion-col>
+            </ion-row>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-row>
+              <ion-col>
+                1
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col>
+                2
+              </ion-col>
+            </ion-row>
+          </ion-col>
+          <ion-col>
+            <ion-row>
+              <ion-col>
+                1
+              </ion-col>
+            </ion-row>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <img
+              src="/assets/img/footer.png" 
+              id="footer" 
+              alt="footer"
+              width="100%"
+              cache="true"
+            >
+          </ion-col>
+        </ion-row>
+      </ion-col>
+      <ion-col col-1></ion-col>
+    </ion-row>
+  </ion-grid>
+
   <ion-list *ngFor="let i of images" style="width:850px;height:1000px">
-    <ion-list-header>
-      <img
-        src="/assets/img/header.png" 
-        id="header" 
-        alt="header"
-        width="100%"
-        cache="true"
-      >
-    </ion-list-header>
     <ion-item>
       <img
         src="{{loadUrl(i)}}" 
         id="{{i.id}}" 
         alt="{{i.name}}"
-        width="100%"
-        cache="true"
-      >
-    </ion-item>
-    <ion-item>
-      <img
-        src="/assets/img/footer.png" 
-        id="footer" 
-        alt="footer"
         width="100%"
         cache="true"
       >
