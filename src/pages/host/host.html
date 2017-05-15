@@ -86,8 +86,26 @@
                   </ion-col>
                 </ion-row>
               </ion-col>
-              <ion-col>
-                2
+              <ion-col>    
+
+                <ion-list radio-group [(ngModel)]="autoManufacturers">
+                  <ion-list-header>
+                    Images
+                  </ion-list-header>
+                  <ion-item *ngFor="let i of images">
+                    <ion-label>
+                      <img
+                        src="{{loadUrl(i)}}" 
+                        id="{{i.id}}" 
+                        alt="{{i.name}}"
+                        width="100%"
+                        cache="true"
+                      >
+                    </ion-label>
+                    <ion-radio value="{{i.id}}"></ion-radio>
+                  </ion-item>
+                </ion-list>
+
               </ion-col>
             </ion-row>
           </ion-col>
