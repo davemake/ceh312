@@ -11,6 +11,7 @@
   import { HostsPage } from '../pages/hosts/hosts';
   import { HostPage } from '../pages/host/host';
   import { DevelopersPage } from '../pages/developers/developers';
+  import { ImagesPage } from '../pages/images/images';
   import { Base } from "../providers/base";
 
   // http://ionicframework.com/docs/native/image-picker/
@@ -59,6 +60,7 @@ const fbconfig = {
     TasksPage,
     HostsPage,
     HostPage,
+    ImagesPage,
     DevelopersPage
   ],
   imports: [
@@ -74,6 +76,7 @@ const fbconfig = {
     TasksPage,
     HostsPage,
     HostPage,
+    ImagesPage,
     DevelopersPage
   ],
   providers: [

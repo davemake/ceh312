@@ -50,8 +50,8 @@
 
   <ion-grid>
     <ion-row>
-      <ion-col col-1></ion-col>
-      <ion-col col-10>
+      <ion-col col></ion-col>
+      <ion-col col>
         <ion-row>
           <ion-col>
             <img
@@ -86,26 +86,11 @@
                   </ion-col>
                 </ion-row>
               </ion-col>
-              <ion-col>    
-
-                <ion-list radio-group [(ngModel)]="autoManufacturers">
-                  <ion-list-header>
-                    Images
-                  </ion-list-header>
-                  <ion-item *ngFor="let i of images">
-                    <ion-label>
-                      <img
-                        src="{{loadUrl(i)}}" 
-                        id="{{i.id}}" 
-                        alt="{{i.name}}"
-                        width="100%"
-                        cache="true"
-                      >
-                    </ion-label>
-                    <ion-radio value="{{i.id}}"></ion-radio>
-                  </ion-item>
-                </ion-list>
-
+              <ion-col>
+                <button ion-item (click)="chooseImage('image_self')" text-wrap padding>
+                  {{images[0].path}}
+                  {{images[0].path}}/{{images[0].name}}
+                </button>
               </ion-col>
             </ion-row>
           </ion-col>
@@ -143,21 +128,9 @@
           </ion-col>
         </ion-row>
       </ion-col>
-      <ion-col col-1></ion-col>
+      <ion-col col></ion-col>
     </ion-row>
   </ion-grid>
-
-  <ion-list *ngFor="let i of images" style="width:850px;height:1000px">
-    <ion-item>
-      <img
-        src="{{loadUrl(i)}}" 
-        id="{{i.id}}" 
-        alt="{{i.name}}"
-        width="100%"
-        cache="true"
-      >
-    </ion-item>
-  </ion-list>
 
 
 

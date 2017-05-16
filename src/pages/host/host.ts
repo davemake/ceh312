@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { AngularFire, AngularFireDatabase, FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2';
-import { IonicPage, Platform, Nav, NavParams } from 'ionic-angular';
+import { ModalController, IonicPage, Platform, Nav, NavParams } from 'ionic-angular';
+import { ImagesPage } from '../images/images';
 
 import 'rxjs/add/operator/map'; // you might need to import this, or not depends on your setup
 
@@ -27,8 +28,8 @@ export class HostPage {
   family_name: FirebaseObjectObservable<any>;
   files: FirebaseListObservable<any>;
   images: any=[];
-  loadUrlLaterItems: any=[];
   imagesList: FirebaseListObservable<any>;
+  loadUrlLaterItems: any=[];
   imagesUrls: any={};
   imagesUrlsWatch: any;
   county: any;
@@ -45,6 +46,7 @@ export class HostPage {
   url: any;
 	pdf: any;
   testUrl: any;
+  image_self: any;
 // 
 
 // constructor
@@ -54,7 +56,8 @@ export class HostPage {
 		public nav: Nav, 
 		public params: NavParams,
 		public platform: Platform, 
-		public base: Base
+		public base: Base,
+    public modal: ModalController
   ) {
     window.thisHost = this;
     this.pdf = window.pdf;
@@ -73,6 +76,7 @@ export class HostPage {
         window.thisHost.images[i] = images[i];
       }
     });
+    
     setInterval( ()=>{
       this.loadUrlLaterProcess();
     }, 1000)
@@ -82,6 +86,22 @@ export class HostPage {
     
   }
 //
+
+/* 
+  ...
+  constructor(
+    ...
+  // Place this in your .ts and call in your .html
+  present() {
+  }
+*/
+  chooseImage(attrib) {
+    let modal = this.modal.create(ImagesPage, {
+      path: this.path,
+      attrib: attrib
+    });
+    modal.present();
+  }
 
 	print() {
 		this.platform.ready().then( ()=> {
