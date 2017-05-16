@@ -2,19 +2,11 @@ import { Component } from '@angular/core';
 import { AngularFire, AngularFireDatabase, FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2';
 import { ModalController, IonicPage, Platform, Nav, NavParams } from 'ionic-angular';
 import { ImagesPage } from '../images/images';
-
 import 'rxjs/add/operator/map'; // you might need to import this, or not depends on your setup
-
 import { Base } from "../../providers/base";
 
 declare var window: any;
 
-/**
- * Generated class for the HostsPage page.
- *
- * See http://ionicframework.com/docs/components/#navigation for more info
- * on Ionic pages and navigation.
- */
 @IonicPage()
 @Component({
   selector: 'page-host',
@@ -47,6 +39,9 @@ export class HostPage {
 	pdf: any;
   testUrl: any;
   image_self: any;
+  image_home: any;
+  image_room: any;
+  imagesTaken: any=[];
 // 
 
 // constructor
@@ -69,6 +64,7 @@ export class HostPage {
     this.keywords = this.base.read(this.path+"/keywords");
     this.statement = this.base.read(this.path+"/statement");
 
+
     this.imagesList = this.storageList(this.path+"/images");
     this.imagesList.subscribe( (images)=>{
       let urls = window.thisHost.imagesUrls;
@@ -87,18 +83,30 @@ export class HostPage {
   }
 //
 
-/* 
-  ...
-  constructor(
-    ...
-  // Place this in your .ts and call in your .html
-  present() {
+  getImageIdsInUse() {
+    let ids = [];
+    this.getImageIdInUse(ids, this.image_self);
+    this.getImageIdInUse(ids, this.image_home);
+    this.getImageIdInUse(ids, this.image_room);
+    return ids;
   }
-*/
-  chooseImage(attrib) {
+
+  getImageIdInUse(items, item) {
+    if (item && item.id) {
+      items.push(item.id);
+    }
+  }
+
+// methods
+  selectImage(attrib) {
     let modal = this.modal.create(ImagesPage, {
       path: this.path,
-      attrib: attrib
+      attrib: attrib,
+      ids: this.getImageIdsInUse()
+    });
+    modal.onDidDismiss(data => {
+      if (data) 
+      this[data.attrib] = data.item;
     });
     modal.present();
   }
@@ -159,10 +167,6 @@ export class HostPage {
   loadUrl( item ) {
     let url = this.imagesUrls[item.id];
     if ( url ) {
-      // Get raw image data
-      //let uri1 = canvas.toDataURL(url).replace(/^data:image\/(png|jpg);base64,/, '');
-      // ... or get as Data URI
-      //let uri2 = canvas.toDataURL(url);
       return url;
     } else {
       this.loadUrlLater( item );
@@ -284,5 +288,6 @@ export class HostPage {
   ionViewDidLoad() {
     console.log('ionViewDidLoad HostPage');
   }
+//
 
 }

@@ -14,6 +14,20 @@
 
 
 <ion-content padding text-wrap>
-  {{path}}
-  {{attrib}}
+
+    <ion-list>
+      <ion-card *ngFor="let i of images">
+        <button ion-item *ngIf="canSelect(i)" (click)="select(i)">
+            <img src="{{loadUrl(i)}}" id="{{i.id}}" cache="true">
+            <button ion-button small>delete</button>
+        </button>
+      </ion-card>
+      <ion-item>
+        <button ion-button (click)="select(null)">cancel</button>
+      </ion-item>
+      <ion-item>
+        <input type="file" (change)="upload()" multiple><br>
+      </ion-item>
+    </ion-list>
+
 </ion-content>

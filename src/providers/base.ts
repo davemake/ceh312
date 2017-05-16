@@ -36,7 +36,7 @@ export class Base {
 	volunteer: any;
 
 	users: FirebaseListObservable<any>;
-	logs: FirebaseListObservable<any>;
+	actions: FirebaseListObservable<any>;
 	hosts: FirebaseListObservable<any>;
 	students: FirebaseListObservable<any>;
 	volunteers: FirebaseListObservable<any>;
@@ -59,7 +59,7 @@ export class Base {
 		this.database = this.afa.database();
 		this.storage = this.afa.storage();
 		this.users = this.list("/users");
-		this.logs = this.list("/users");
+		this.actions = this.list("/users");
 		this.hosts = this.list("/hosts");
 		this.students = this.list("/students");
 		this.volunteers = this.list("/volunteers");
@@ -144,32 +144,24 @@ export class Base {
 	}
 
 	uploadFile(path, name, file) {
-		let path_storage;
-		let path_database;
 		let naming = name.split(".");
 		let last = naming.length-1;
 		let type = naming[last];
-		if ("pdf".match(type)) {
-			path_storage = path+"/files/"+name;
-			path_database = path+"/files";
-		} else {
-			path_storage = path+"/images/"+name;
-			path_database = path+"/images";
-		};
+		let path_storage = path+"/"+name;
 		let ref = this.storage.ref(path_storage);
 		ref.put(file);
-		let database_obj = {
+		let obj = {
 			created: (new Date).getTime(),
 			uploaded: null,
-			path: path_database,
+			path: path,
 			name: name,
 			id: name.split(".")[0]
 		}
-		let key = this.afd.list(path_database).push(database_obj).key;
-		this.update(path_database+"/"+key+"/key", key);
+		let key = this.afd.list(path).push(obj).key;
+		this.update(path+"/"+key+"/key", key);
 	}
 
-	log(path, action) {
+	action(path, action) {
 		let user = this.user;
 		if (user) {
 			console.log(user.email, path, action);
@@ -288,10 +280,10 @@ export class Base {
 		path += "/"+key;
 		this.update(path+"/path", path);
 		this.update(path+"/key", key);
-    	this.log(path, "create");
+    	this.action(path, "create");
 		obj = this.read(path);
 		console.log(obj);
-		this.log(path, "create")
+		this.action(path, "create")
 	}
 	
 	read(path) {
@@ -313,7 +305,7 @@ export class Base {
 
 	update(path, data) {
 		this.database.ref(path).set(data).catch( this.catchError );
-    	this.log(path, "update");
+    	this.action(path, "update");
 	}
 
 	destroy(path) {

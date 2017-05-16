@@ -1,18 +1,14 @@
 import { Component } from '@angular/core';
 import { AngularFire, AngularFireDatabase, FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2';
-import { ModalController, IonicPage, Platform, NavController, NavParams } from 'ionic-angular';
-import 'rxjs/add/operator/map'; // you might need to import this, or not depends on your setup
-import { Base } from "../../providers/base";
-
-
 /* 
-  import { ModalController, IonicPage, NavController, NavParams } from 'ionic-angular';
+  import { ModalController, IonicPage, NavController, NavParams, ViewController } from 'ionic-angular';
   import { ImagesPage } from '../images/images';
   ...
   constructor(
     public navCtrl: NavController, 
     public navParams: NavParams,
-    public modal: ModalController
+    public modal: ModalController,
+    public view: ViewController
     ...
   // Place this in your .ts and call in your .html
   present() {
@@ -22,6 +18,11 @@ import { Base } from "../../providers/base";
     }).present();
   }
 */
+import { ModalController, IonicPage, Platform, NavController, NavParams, ViewController } from 'ionic-angular';
+import 'rxjs/add/operator/map'; // you might need to import this, or not depends on your setup
+import { Base } from "../../providers/base";
+
+
 
 declare var window: any;
 
@@ -35,29 +36,14 @@ export class ImagesPage {
 // vars
 	user: any;
   mobile: any;
-  family_name: FirebaseObjectObservable<any>;
-  files: FirebaseListObservable<any>;
   images: any=[];
   imagesList: FirebaseListObservable<any>;
   loadUrlLaterItems: any=[];
   imagesUrls: any={};
   imagesUrlsWatch: any;
-  county: any;
-  city: any;
-  keywords: any;
-  statement: any;
-  edits: any=[];
-  key: any;
   path: any;
-  imagePaths: any=[];
-  pageIsLoaded: any;
-  imagesWatch: any;
-  imagesNotReady: any;
-  url: any;
-	pdf: any;
-  testUrl: any;
-  image_self: any;
   attrib: any;
+  ids: any=[];
 // 
 
 // constructor
@@ -68,17 +54,18 @@ export class ImagesPage {
 		public params: NavParams,
 		public platform: Platform, 
 		public base: Base,
-    public modal: ModalController
+    public modal: ModalController,
+    public view: ViewController
   ) {
     window.thisImages = this;
     this.path = this.params.get('path');
     this.attrib = this.params.get('attrib');
-
+    this.ids = this.params.get('ids');
     this.imagesList = this.storageList(this.path+"/images");
     this.imagesList.subscribe( (images)=>{
-      let urls = window.thisImages.imagesUrls;
       for (let i in images) {
-        window.thisImages.images[i] = images[i];
+        let image = images[i];
+        window.thisImages.images[i] = image;
       }
     });
     
@@ -92,10 +79,29 @@ export class ImagesPage {
   }
 //
 
+  upload() {
+    if (this.path) {
+      this.base.upload(this.path+"/images");
+    }
+  }
+
+  canSelect(item) {
+    return !this.ids.includes(item.id);
+  }
+
+  select(item) {
+    if (item) {
+      this.view.dismiss({attrib: this.attrib, item: item});
+    } else {
+      this.view.dismiss();
+    }
+  }
+
   storageList(path) {
     return <FirebaseListObservable<any>> this.base.list(path).map( (items) => {
       return items.map( (item) => {
-        let ref = window.thisImages.base.storage.ref(item.path+"/"+item.name);
+        let path = item.path+"/"+item.name;
+        let ref = window.thisImages.base.storage.ref(path);
         let ref2 = ref.getDownloadURL();
         ref2.then( (url) => {
           let id = window.thisImages.base.getUrlId(url);

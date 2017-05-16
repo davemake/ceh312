@@ -43,24 +43,14 @@
       <ion-label floating text-capitalize>keywords</ion-label>
       <ion-input type="text" [(ngModel)]="keywords" (change)="update('keywords', 'keywords')" text-capitalize text-wrap></ion-input>
     </ion-item>
-    <ion-item>
-      <input type="file" (change)="upload()" multiple><br>
-    </ion-item>
 	</ion-list>
 
   <ion-grid>
-    <ion-row>
-      <ion-col col></ion-col>
-      <ion-col col>
+    <ion-row style="max-width:850px;max-height:1100px">
+      <ion-col>
         <ion-row>
           <ion-col>
-            <img
-              src="/assets/img/header.png" 
-              id="header" 
-              alt="header"
-              width="100%"
-              cache="true"
-            >
+            header
           </ion-col>
         </ion-row>
         <ion-row>
@@ -87,9 +77,10 @@
                 </ion-row>
               </ion-col>
               <ion-col>
-                <button ion-item (click)="chooseImage('image_self')" text-wrap padding>
-                  {{images[0].path}}
-                  {{images[0].path}}/{{images[0].name}}
+                <button ion-item (click)="selectImage('image_self')" text-wrap padding>
+                  <span *ngIf="image_self">
+                    <img src="{{loadUrl(image_self)}}" id="{{image_self.id}}">
+                  </span>
                 </button>
               </ion-col>
             </ion-row>
@@ -99,12 +90,20 @@
           <ion-col>
             <ion-row>
               <ion-col>
-                1
+                <button ion-item (click)="selectImage('image_home')" text-wrap padding>
+                  <span *ngIf="image_home">
+                    <img src="{{loadUrl(image_home)}}" id="{{image_home.id}}">
+                  </span>
+                </button>
               </ion-col>
             </ion-row>
             <ion-row>
               <ion-col>
-                2
+                <button ion-item (click)="selectImage('image_room')" text-wrap padding>
+                  <span *ngIf="image_room">
+                    <img src="{{loadUrl(image_room)}}" id="{{image_room.id}}">
+                  </span>
+                </button>
               </ion-col>
             </ion-row>
           </ion-col>
@@ -118,17 +117,10 @@
         </ion-row>
         <ion-row>
           <ion-col>
-            <img
-              src="/assets/img/footer.png" 
-              id="footer" 
-              alt="footer"
-              width="100%"
-              cache="true"
-            >
+            footer
           </ion-col>
         </ion-row>
       </ion-col>
-      <ion-col col></ion-col>
     </ion-row>
   </ion-grid>
 
