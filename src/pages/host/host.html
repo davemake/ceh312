@@ -76,7 +76,6 @@
               <ion-col>
                 <button ion-item (click)="selectImage('image_self')" text-wrap padding>
                   <span *ngIf="image_self">
-                    {{urlToId(image_self)}}
                     <img src="{{urlToSrc(image_self)}}" id="{{urlToId(image_self)}}">
                   </span>
                 </button>
@@ -90,9 +89,7 @@
               <ion-col>
                 <button ion-item (click)="selectImage('image_home')" text-wrap padding>
                   <span *ngIf="image_home">
-                    <!--
-                    <img src="{{urlToSrc(image_home)}}" id="{{image_home.id}}">
-                    -->
+                    <img src="{{urlToSrc(image_home)}}" id="{{urlToId(image_home)}}">
                   </span>
                 </button>
               </ion-col>
@@ -101,9 +98,7 @@
               <ion-col>
                 <button ion-item (click)="selectImage('image_room')" text-wrap padding>
                   <span *ngIf="image_room">
-                    <!--
-                    <img src="{{urlToSrc(image_room)}}" id="{{image_room.id}}">
-                    -->
+                    <img src="{{urlToSrc(image_room)}}" id="{{urlToId(image_room)}}">
                   </span>
                 </button>
               </ion-col>

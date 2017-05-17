@@ -44,7 +44,7 @@ export class HostPage {
   image_self: any;
   image_home: any;
   image_room: any;
-  imagesTaken: any=[];
+  idsNot: any=[];
 // 
 
 // constructor
@@ -75,27 +75,12 @@ export class HostPage {
   }
 //
 
-// methods
-  getImageIdsInUse() {
-    let ids = [];
-    this.getImageIdInUse(ids, this.image_self);
-    this.getImageIdInUse(ids, this.image_home);
-    this.getImageIdInUse(ids, this.image_room);
-    return ids;
-  }
-
-  getImageIdInUse(items, item) {
-    if (item && item.id) {
-      items.push(item.id);
-    }
-  }
-
   selectImage() {
     let attrib = arguments[0];
     let modal = this.modal.create(ImagesPage, {
       path: this.path,
       attrib: attrib,
-      ids: this.getImageIdsInUse()
+      idsNot: this.idsNot
     });
     modal.onDidDismiss(data => {
       if (data) {
@@ -127,6 +112,7 @@ export class HostPage {
 
   urlToSrc( url ) {
     let id = this.urlToId(url);
+    this.idsNot.push(id);
     let src = this.idToUrlSrc[id];
     if ( src ) {
       return src;

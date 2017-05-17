@@ -43,7 +43,7 @@ export class ImagesPage {
   imagesUrlsWatch: any;
   path: any;
   attrib: any;
-  ids: any=[];
+  idsNot: any=[];
 // 
 
 // constructor
@@ -60,7 +60,7 @@ export class ImagesPage {
     window.thisImages = this;
     this.path = this.params.get('path');
     this.attrib = this.params.get('attrib');
-    this.ids = this.params.get('ids');
+    this.idsNot = this.params.get('idsNot');
     this.imagesList = this.storageList(this.path+"/images");
     this.imagesList.subscribe( (images)=>{
       for ( let i in images.reverse() ) {
@@ -96,7 +96,7 @@ export class ImagesPage {
   }
 
   selectable(item) {
-    return !this.ids.includes(item.id);
+    return !this.idsNot.includes(item.id);
   }
 
   select(item) {
