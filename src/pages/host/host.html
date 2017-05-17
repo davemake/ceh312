@@ -76,7 +76,10 @@
               <ion-col>
                 <button ion-item (click)="selectImage('image_self')" text-wrap padding>
                   <span *ngIf="image_self">
+                    {{image_self}}
+                    <!-- 
                     <img src="{{loadUrl(image_self)}}" id="{{image_self.id}}">
+                    -->
                   </span>
                 </button>
               </ion-col>

@@ -64,6 +64,7 @@ export class HostPage {
     this.keywords = this.base.read(this.path+"/keywords");
     this.statement = this.base.read(this.path+"/statement");
 
+    this.image_self = this.base.read(this.path+"/image_self");
 
     this.imagesList = this.storageList(this.path+"/images");
     this.imagesList.subscribe( (images)=>{
@@ -98,7 +99,8 @@ export class HostPage {
     }
   }
 
-  selectImage(attrib) {
+  selectImage() {
+    let attrib = arguments[0];
     let modal = this.modal.create(ImagesPage, {
       path: this.path,
       attrib: attrib,
@@ -106,7 +108,7 @@ export class HostPage {
     });
     modal.onDidDismiss(data => {
       if (data) {
-        this[data.attrib] = data.item;
+        this.update(attrib, null, data.url);
       }
     });
     modal.present();
@@ -218,7 +220,11 @@ export class HostPage {
     }
   }
 
-  update(attrib, processing) {
+  // update( 'name', 'titleize', 'dave') //=> this.name == "Dave"
+  update(attrib, processing:string=null, value:any=undefined) {
+    if (value!=undefined) {
+      this[attrib] = value;
+    }
     switch (processing) {
       case "uppercase": this[attrib] = this.toUppercase(this.toTitleize(this[attrib])); break;
       case "titleize": this[attrib] = this.toTitleize(this[attrib]); break;

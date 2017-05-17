@@ -101,7 +101,10 @@ export class ImagesPage {
 
   select(item) {
     if (item) {
-      this.view.dismiss({attrib: this.attrib, item: item});
+      item = JSON.parse(JSON.stringify(item));
+      let attrib = this.attrib;
+      let url = this.path+"/"+attrib;
+      this.view.dismiss({attrib: attrib, url: url});
     } else {
       this.view.dismiss();
     }
