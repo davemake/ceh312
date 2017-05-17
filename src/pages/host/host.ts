@@ -83,6 +83,7 @@ export class HostPage {
   }
 //
 
+// methods
   getImageIdsInUse() {
     let ids = [];
     this.getImageIdInUse(ids, this.image_self);
@@ -97,7 +98,6 @@ export class HostPage {
     }
   }
 
-// methods
   selectImage(attrib) {
     let modal = this.modal.create(ImagesPage, {
       path: this.path,
@@ -105,8 +105,9 @@ export class HostPage {
       ids: this.getImageIdsInUse()
     });
     modal.onDidDismiss(data => {
-      if (data) 
-      this[data.attrib] = data.item;
+      if (data) {
+        this[data.attrib] = data.item;
+      }
     });
     modal.present();
   }
@@ -276,7 +277,7 @@ export class HostPage {
   }
 
   destroy() {
-    this.base.destroy("hosts/"+this.key+"/");
+    this.base.destroy("hosts/"+this.key);
   }
 
   upload() {

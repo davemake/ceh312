@@ -8,6 +8,7 @@
 
   <ion-navbar>
     <ion-title>host</ion-title>
+    <button ion-button *ngIf="mobile" (click)="print()">print & pdf</button>
   </ion-navbar>
 
 </ion-header>
@@ -36,12 +37,8 @@
       <ion-label text-capitalize>pets</ion-label>
       <ion-checkbox [(ngModel)]="keywords[pets]" disabled="false"></ion-checkbox>
     </ion-item>
-    <ion-item *ngIf="mobile">
-      <button ion-button (click)="print()">print & pdf</button>
-    </ion-item>
     <ion-item>
       <ion-label floating text-capitalize>keywords</ion-label>
-      <ion-input type="text" [(ngModel)]="keywords" (change)="update('keywords', 'keywords')" text-capitalize text-wrap></ion-input>
     </ion-item>
 	</ion-list>
 

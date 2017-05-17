@@ -44,7 +44,7 @@ export class Base {
 	agents: FirebaseListObservable<any>;
 	files: FirebaseListObservable<any>;
 	images: FirebaseListObservable<any>;
-// end vars
+//
 
 // constructor
 	constructor(
@@ -69,8 +69,9 @@ export class Base {
 		this.mobile = this.isMobileCheck();
 		this.auth.onAuthStateChanged( this.updateUser );
     }
-// end constructor
+//
 
+// methods
 	list(path) {
 		return this.afd.list(path);
 	}
@@ -308,32 +309,13 @@ export class Base {
     	this.action(path, "update");
 	}
 
-	destroy(path) {
-		this.database.ref(path).delete();
-		// check if storage
-		// destroy storage
+	destroyStorageItem(item) {
+		this.destroy(item.path+"/"+item.key);
+		this.storage.ref(item.path+"/"+item.name).delete();
 	}
 
-	getUrl(i) {
-debugger;
-		let path_name = i.path+"/"+i.name;
-debugger;
-		let ref = this.storage.ref(path_name);
-debugger;
-		ref.getDownloadURL().then( (url)=> {
-debugger;
-			let this2 = window.thisBase;
-debugger;
-			let id = this2.getUrlId(url);
-debugger;
-			if (document.getElementById(id)) {
-debugger;
-				document.getElementById(id).setAttribute('src', url);
-debugger;
-			};
-debugger;
-		}).catch( this.catchError );
-debugger;
+	destroy(path) {
+		this.database.ref(path).remove();
 	}
 
 	getUrlId(url) {
@@ -389,5 +371,6 @@ debugger;
 			return false;
 		}
 	}
+//
 
 }

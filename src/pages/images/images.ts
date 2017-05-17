@@ -63,7 +63,7 @@ export class ImagesPage {
     this.ids = this.params.get('ids');
     this.imagesList = this.storageList(this.path+"/images");
     this.imagesList.subscribe( (images)=>{
-      for (let i in images) {
+      for ( let i in images.reverse() ) {
         let image = images[i];
         window.thisImages.images[i] = image;
       }
@@ -79,13 +79,23 @@ export class ImagesPage {
   }
 //
 
+  swipe(i) {
+    console.log('swipe', i);
+  }
+
+  destroy(i) {
+    console.log('destroy', i);
+    this.base.destroyStorageItem(i);
+    this.view.dismiss({attrib: this.attrib, item: null});
+  }
+
   upload() {
     if (this.path) {
       this.base.upload(this.path+"/images");
     }
   }
 
-  canSelect(item) {
+  selectable(item) {
     return !this.ids.includes(item.id);
   }
 
