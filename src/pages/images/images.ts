@@ -102,9 +102,7 @@ export class ImagesPage {
   select(item) {
     if (item) {
       item = JSON.parse(JSON.stringify(item));
-      let attrib = this.attrib;
-      let url = this.path+"/"+attrib;
-      this.view.dismiss({attrib: attrib, url: url});
+      this.view.dismiss({attrib: this.attrib, url: item.path+"/"+item.name});
     } else {
       this.view.dismiss();
     }
@@ -117,7 +115,7 @@ export class ImagesPage {
         let ref = window.thisImages.base.storage.ref(path);
         let ref2 = ref.getDownloadURL();
         ref2.then( (url) => {
-          let id = window.thisImages.base.getUrlId(url);
+          let id = window.thisImages.base.urlToId(url);
           window.thisImages.imagesUrls[id] = url;
         }).catch( console.log );
         return item;
@@ -152,7 +150,7 @@ export class ImagesPage {
   }
 
   loadUrlLaterProcessUrl(url) {
-    let id = window.thisImages.base.getUrlId(url);
+    let id = window.thisImages.base.urlToId(url);
     window.thisImages.loadUrlLaterUpdateAttrib(id, url);
     window.thisImages.loadUrlLaterRemoveItem(id);
   }

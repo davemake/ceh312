@@ -318,11 +318,10 @@ export class Base {
 		this.database.ref(path).remove();
 	}
 
-	getUrlId(url) {
+	urlToId(url) {
 		let names = url.split("?")[0].split("%2F");
-		let name = names[names.length-1];
-		let id = names[names.length-1].split(".")[0];
-		return id;
+		let name = names[names.length-1].split("/").pop();
+		return name.split(".")[0];
 	}
 
 	randomName(fullname) {

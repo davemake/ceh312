@@ -21,9 +21,12 @@ export class HostPage {
   files: FirebaseListObservable<any>;
   images: any=[];
   imagesList: FirebaseListObservable<any>;
-  loadUrlLaterItems: any=[];
-  imagesUrls: any={};
-  imagesUrlsWatch: any;
+
+  urlToSrcLaterUrls: any=[];
+  urlToSrcLaterWatch: any;
+
+  idToUrlSrc: any={};
+  idToUrlSrcWatch: any;
   county: any;
   city: any;
   keywords: any;
@@ -65,18 +68,6 @@ export class HostPage {
     this.statement = this.base.read(this.path+"/statement");
 
     this.image_self = this.base.read(this.path+"/image_self");
-
-    this.imagesList = this.storageList(this.path+"/images");
-    this.imagesList.subscribe( (images)=>{
-      let urls = window.thisHost.imagesUrls;
-      for (let i in images) {
-        window.thisHost.images[i] = images[i];
-      }
-    });
-    
-    setInterval( ()=>{
-      this.loadUrlLaterProcess();
-    }, 1000)
 
     this.mobile = this.base.mobile;
 		this.user = this.base.user;
@@ -130,92 +121,84 @@ export class HostPage {
 		});
 	}
 
-  storageList(path) {
-    return <FirebaseListObservable<any>> this.base.list(path).map( (items) => {
-      return items.map( (item) => {
-        let ref = window.thisHost.base.storage.ref(item.path+"/"+item.name);
-        let ref2 = ref.getDownloadURL();
-        ref2.then( (url) => {
-          let id = window.thisHost.base.getUrlId(url);
-          window.thisHost.imagesUrls[id] = url;
-        }).catch( console.log );
-        return item;
-      });
-    });
+  urlToId( url ) {
+    return this.base.urlToId( url );
   }
 
-  fileToBase64( file ) {
-    let reader = new FileReader();
-    reader.readAsDataURL( file );
-    reader.onload = ( e )=>{
-      return e.target['result'];
-    };
-  }
-
-  loadBase64( item ) {
-    let url = this.imagesUrls[item.id];
-    if ( url ) {
-      let request = new XMLHttpRequest();
-      request.open('get', url, true);
-      request.responseType = 'blob';
-      request.send();
-      request.onload = ()=>{
-        return this.fileToBase64( request.response )
-      };
+  urlToSrc( url ) {
+    let id = this.urlToId(url);
+    let src = this.idToUrlSrc[id];
+    if ( src ) {
+      return src;
     } else {
-      return null;
+      return this.urlToSrcLater( url );
     }
   }
 
-  loadUrl( item ) {
-    let url = this.imagesUrls[item.id];
-    if ( url ) {
-      return url;
+  urlToSrcLater( url ) {
+    let urls = this.urlToSrcLaterUrls;
+    if ( url && !urls.includes( url ) ) {
+      urls.push(url);
+      this.urlToSrcLaterProcess();
+    }
+    return null;
+  }
+
+  urlToSrcLaterProcess() {
+    console.log("urlToSrcLaterProcess()")
+    if ( !this.urlToSrcLaterWatch ) {
+      let urls = this.urlToSrcLaterUrls;
+      this.urlToSrcLaterProcessUrls( urls );
+    }
+  }
+
+  urlToSrcLaterProcessUrls(urls) {
+    console.log("urlToSrcLaterProcessUrls(", urls, ")");
+    if ( urls.length ) {
+      console.log("LOOPING START", );
+      this.urlToSrcLaterWatch = setInterval( ()=>{
+        for ( let i in urls ) {
+          let url = urls[i];
+          let ref = this.base.storage.ref(url);
+          let src = ref.getDownloadURL();
+          src.then( this.urlToSrcLaterProcessUrl ).catch( console.log );
+        }
+      }, 1000)
     } else {
-      this.loadUrlLater( item );
-      return null;
+      console.log("LOOPING STOP");
+      clearInterval( this.urlToSrcLaterWatch );
+      this.urlToSrcLaterWatch = null;
     }
   }
 
-  loadUrlLater( item ) {
-    if ( !this.loadUrlLaterItems.includes( item ) ) {
-      this.loadUrlLaterItems.push(item);
-    }
+  urlToSrcLaterProcessUrl(url) {
+    console.log("urlToSrcLaterProcessUrl(", url, ")");
+    let id = window.thisHost.base.urlToId(url);
+    window.thisHost.urlToSrcLaterUpdateAttrib(id, url);
+    window.thisHost.urlToSrcLaterRemoveUrl(url);
   }
 
-  loadUrlLaterProcess() {
-    if ( this.loadUrlLaterItems.length ) {
-      for ( let i in this.loadUrlLaterItems ) {
-        let item = this.loadUrlLaterItems[i];
-        let ref = window.thisHost.base.storage.ref(item.path+"/"+item.name);
-        ref.getDownloadURL().then( this.loadUrlLaterProcessUrl ).catch( console.log );
-      }
-    }
-  }
-
-  loadUrlLaterProcessUrl(url) {
-    let id = window.thisHost.base.getUrlId(url);
-    window.thisHost.loadUrlLaterUpdateAttrib(id, url);
-    window.thisHost.loadUrlLaterRemoveItem(id);
-  }
-
-  loadUrlLaterRemoveItem(id) {
-    for ( let i in window.thisHost.loadUrlLaterItems ) {
-      let item = this.loadUrlLaterItems[i];
-      if ( item.id==id ) {
-        if ( window.thisHost.loadUrlLaterItems.length==1 ) {
-          window.thisHost.loadUrlLaterItems = [];
+  urlToSrcLaterRemoveUrl(url) {
+    console.log("urlToSrcLaterRemoveUrl(", url, ")")
+    let urlRef = url.split("?")[0];
+    let urls = window.thisHost.urlToSrcLaterUrls;
+    for ( let i in urls ) {
+      let urlRef = urls[i];
+      if ( urlRef==urls[i] ) {
+        if ( urls.length==1 ) {
+          urls = [];
         } else {
-          window.thisHost.loadUrlLaterItems.splice(i, i);
+          urls.splice(i, i);
         }
       }
-      console.log("load", item.path+"/"+item.name);
     }
   }
 
-  loadUrlLaterUpdateAttrib(id, url) {
-    window.thisHost.imagesUrls[id] = url;
+  urlToSrcLaterUpdateAttrib(id, url) {
+    console.log("urlToSrcLaterUpdateAttrib(", id, ", ", url, ")");
+    window.thisHost.idToUrlSrc[id] = url;
     if (document.getElementById(id)) {
+      console.log("if (document.getElementById(", id, "))");
       document.getElementById(id).setAttribute('src', url);
     }
   }
