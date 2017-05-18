@@ -100,6 +100,7 @@ export class HostPage {
     let modal = this.modal.create(ImagesPage, {
       path: this.path,
       attrib: attrib,
+      title: this.selectImageTitle(attrib),
       idsNot: this.getUrlIds()
     });
     modal.onDidDismiss(data => {
@@ -108,6 +109,16 @@ export class HostPage {
       }
     });
     modal.present();
+  }
+
+  selectImageTitle(attrib) {
+    let title = "please choose the best picture of: ";
+    switch ( attrib ) {
+      case "image_self": title += "yourself or a 'selfie'"; break;
+      case "image_home": title += "the home exterior"; break;
+      case "image_room": title += "a student's room"; break;
+    }
+    return title;
   }
 
   getUrlIds() {

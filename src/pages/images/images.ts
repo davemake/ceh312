@@ -44,6 +44,7 @@ export class ImagesPage {
   path: any;
   attrib: any;
   idsNot: any=[];
+  title: any;
 // 
 
 // constructor
@@ -61,6 +62,7 @@ export class ImagesPage {
     this.path = this.params.get('path');
     this.attrib = this.params.get('attrib');
     this.idsNot = this.params.get('idsNot');
+    this.title = this.params.get('title');
     this.imagesList = this.storageList(this.path+"/images");
     this.imagesList.subscribe( (images)=>{
       for ( let i in images.reverse() ) {
@@ -79,6 +81,7 @@ export class ImagesPage {
   }
 //
 
+// methods
   swipe(i) {
     console.log('swipe', i);
   }
@@ -179,5 +182,6 @@ export class ImagesPage {
   ionViewDidLoad() {
     console.log('ionViewDidLoad ImagesPage');
   }
+//
 
 }
