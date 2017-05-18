@@ -1,5 +1,13 @@
 // http://ionicframework.com/docs/v2/theming/
 
+    .shadow {
+        box-shadow: -6px 6px 3px silver;
+        border: solid 1px silver;
+    }
+
+    .cursor {
+        cursor: pointer;
+    }
 
 // App Global Sass
 // --------------------------------------------------

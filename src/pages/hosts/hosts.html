@@ -20,11 +20,16 @@
 <ion-content padding>
 
 
-	<ion-list>
-    <button ion-item *ngFor="let i of hosts | async" (click)="read(i.key)">
+<ion-list>
+  <button ion-item *ngFor="let i of hosts | async" (click)="read(i.key)">
+    <span *ngIf="i.family_name">
+      {{i.family_name}}
+    </span>
+    <span *ngIf="!i.family_name">
       {{i.key}}
-    </button>
-  </ion-list>
+    </span>
+  </button>
+</ion-list>
 
 
 

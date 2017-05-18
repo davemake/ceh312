@@ -319,6 +319,7 @@ export class Base {
 	}
 
 	urlToId(url) {
+		
 		let names = url.split("?")[0].split("%2F");
 		let name = names[names.length-1].split("/").pop();
 		return name.split(".")[0];

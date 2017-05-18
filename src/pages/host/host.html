@@ -7,119 +7,147 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>host</ion-title>
-    <button ion-button *ngIf="mobile" (click)="print()">print & pdf</button>
+    <ion-title>
+      <span *ngIf="noMode()">
+        host
+      </span>
+      <span *ngIf="yesMode()">
+        <button ion-button full *ngIf="yesMode()" (click)="setMode(null)">cancel</button>
+      </span>
+    </ion-title>
+    <ion-buttons end>
+      <button ion-button large *ngIf="noMode() && mobile" (click)="print()">pdf</button>
+    </ion-buttons>
   </ion-navbar>
 
 </ion-header>
 
 
 <ion-content padding>
+    
+	<ion-list *ngIf="yesMode()">
 
-	<ion-list>
-    <ion-item>
+    <ion-item *ngIf="mode('family_name')">
       <ion-label floating text-capitalize>family name</ion-label>
       <ion-input type="text" [(ngModel)]="family_name" (change)="update('family_name', 'uppercase')"></ion-input>
     </ion-item>
-    <ion-item>
+
+    <ion-item *ngIf="mode('county')">
       <ion-label floating text-capitalize>county</ion-label>
       <ion-input type="text" [(ngModel)]="county" (change)="update('county', 'titleize')"></ion-input>
     </ion-item>
-    <ion-item>
+
+    <ion-item *ngIf="mode('city')">
       <ion-label floating text-capitalize>city</ion-label>
       <ion-input type="text" [(ngModel)]="city" (change)="update('city', 'titleize')"></ion-input>
     </ion-item>
-    <ion-item>
+
+    <ion-item *ngIf="mode('keywords')">
+      <ion-label text-capitalize>keywords</ion-label>
+      <ion-checkbox [(ngModel)]="keywords[pets]"></ion-checkbox>
+    </ion-item>
+
+    <ion-item *ngIf="mode('statement')">
       <ion-label floating text-capitalize>statement</ion-label>
       <ion-textarea [(ngModel)]="statement" (change)="update('statement', 'paragraphs')" text-wrap></ion-textarea>
     </ion-item>
-    <ion-item>
-      <ion-label text-capitalize>pets</ion-label>
-      <ion-checkbox [(ngModel)]="keywords[pets]" disabled="false"></ion-checkbox>
-    </ion-item>
-    <ion-item>
-      <ion-label floating text-capitalize>keywords</ion-label>
-    </ion-item>
+
 	</ion-list>
 
-  <ion-grid>
-    <ion-row style="max-width:850px;max-height:1100px">
-      <ion-col>
-        <ion-row>
-          <ion-col>
-            header
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col>
-            <ion-row>
-              <ion-col>
-                <ion-row>
-                  <ion-col>
-                    <strong>Host Family:</strong>
-                    <strong>{{family_name}}</strong>
-                  </ion-col>
-                </ion-row>
-                <ion-row>
-                  <ion-col>
-                    <strong>County:</strong>
-                    {{county}}
-                  </ion-col>
-                </ion-row>
-                <ion-row>
-                  <ion-col>
-                    <strong>City:</strong>
-                    {{city}}
-                  </ion-col>
-                </ion-row>
-              </ion-col>
-              <ion-col>
-                <button ion-item (click)="selectImage('image_self')" text-wrap padding>
-                  <span *ngIf="image_self">
+  <ion-card class="shadow" *ngIf="noMode()">
+    <ion-grid no-padding>
+      <ion-row>
+        <ion-col>
+          <ion-row>
+            <ion-col>
+              <img src="assets/img/header.png" id="header">
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <ion-row>
+                <ion-col class="cursor" text-wrap>
+
+                    <ion-row (click)="setMode('family_name')">
+                      <ion-col text-center>
+                        <strong>Family Name:</strong>
+                        <p text-large>{{family_name}}</p>
+                      </ion-col>
+                    </ion-row>
+
+                    <ion-row (click)="setMode('county')">
+                      <ion-col>
+                        <strong>County:</strong>
+                        {{county}}
+                      </ion-col>
+                    </ion-row>
+
+                    <ion-row (click)="setMode('city')">
+                      <ion-col>
+                        <strong>City:</strong>
+                        {{city}}
+                      </ion-col>
+                    </ion-row>
+
+                    <ion-row (click)="setMode('statement')">
+                      <ion-col>
+                        <strong>Statement:</strong>
+                      </ion-col>
+                    </ion-row>
+
+                    <ion-row (click)="setMode('keywords')">
+                      <ion-col>
+                        <strong>Keywords:</strong>
+                      </ion-col>
+                    </ion-row>
+
+                </ion-col>
+
+                <ion-col (click)="selectImage('image_self')" class="cursor" text-wrap no-padding>
+                  <ion-card *ngIf="image_self" class="shadow" no-padding>
                     <img src="{{urlToSrc(image_self)}}" id="{{urlToId(image_self)}}">
-                  </span>
-                </button>
-              </ion-col>
-            </ion-row>
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col>
-            <ion-row>
-              <ion-col>
-                <button ion-item (click)="selectImage('image_home')" text-wrap padding>
-                  <span *ngIf="image_home">
+                  </ion-card>
+                </ion-col>
+
+              </ion-row>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+
+              <ion-row>
+                <ion-col (click)="selectImage('image_home')" class="cursor" text-wrap no-padding>
+                  <ion-card *ngIf="image_home" class="shadow" no-padding>
                     <img src="{{urlToSrc(image_home)}}" id="{{urlToId(image_home)}}">
-                  </span>
-                </button>
-              </ion-col>
-            </ion-row>
-            <ion-row>
-              <ion-col>
-                <button ion-item (click)="selectImage('image_room')" text-wrap padding>
-                  <span *ngIf="image_room">
+                  </ion-card>
+                </ion-col>
+              </ion-row>
+
+              <ion-row>
+                <ion-col (click)="selectImage('image_room')" class="cursor" text-wrap no-padding>
+                  <ion-card *ngIf="image_room" class="shadow" no-padding>
                     <img src="{{urlToSrc(image_room)}}" id="{{urlToId(image_room)}}">
-                  </span>
-                </button>
-              </ion-col>
-            </ion-row>
-          </ion-col>
-          <ion-col>
-            <ion-row>
-              <ion-col>
-                1
-              </ion-col>
-            </ion-row>
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col>
-            footer
-          </ion-col>
-        </ion-row>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+                  </ion-card>
+                </ion-col>
+              </ion-row>
+            </ion-col>
+            <ion-col>
+              <ion-row>
+                <ion-col>
+                  
+                </ion-col>
+              </ion-row>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <img src="assets/img/footer.png" id="footer">
+            </ion-col>
+          </ion-row>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card>
 
 
 

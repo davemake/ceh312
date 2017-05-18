@@ -19,24 +19,37 @@
 
       <ion-item-sliding>
         <ion-item>
+          <ion-grid>
+            <ion-row>
+              <ion-col>
           <button ion-button full (click)="select(null)">cancel</button>
+              </ion-col>
+              <ion-col>
+          <button ion-button full (click)="select(null)">clear</button>
+              </ion-col>
+              <ion-col>
+          <button ion-button full (click)="select(null)">request</button>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
         </ion-item>
         <ion-item-options side="right" (ionSwipe)="swipe(i)">
           <input type="file" (change)="upload()" multiple>
         </ion-item-options>
       </ion-item-sliding>
 
-      <ion-item-sliding *ngFor="let i of images">
-        <button ion-item *ngIf="selectable(i)" (click)="select(i)">
-            <img src="{{loadUrl(i)}}" id="{{i.id}}" cache="true">
-        </button>
-        <button ion-item *ngIf="!selectable(i)" disabled>
-            <img src="{{loadUrl(i)}}" id="{{i.id}}" cache="true">
-        </button>
-        <ion-item-options side="right" (ionSwipe)="swipe(i)">
-          <button ion-button expandable small (click)="destroy(i)">destroy</button>
-        </ion-item-options>
-      </ion-item-sliding>
+      <span *ngFor="let i of images">
+        <ion-item-sliding *ngIf="selectable(i)">
+          <ion-item>
+            <button *ngIf="selectable(i)" (click)="select(i)">
+              <img src="{{loadUrl(i)}}" id="{{i.id}}" cache="true">
+            </button>
+          </ion-item>
+          <ion-item-options side="right" (ionSwipe)="swipe(i)">
+            <button ion-button expandable small (click)="destroy(i)">destroy</button>
+          </ion-item-options>
+        </ion-item-sliding>
+      </span>
 
     </ion-list>
 

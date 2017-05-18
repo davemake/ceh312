@@ -17,34 +17,30 @@ export class HostPage {
 // vars
 	user: any;
   mobile: any;
-  family_name: FirebaseObjectObservable<any>;
-  files: FirebaseListObservable<any>;
   images: any=[];
-  imagesList: FirebaseListObservable<any>;
 
   urlToSrcLaterUrls: any=[];
   urlToSrcLaterWatch: any;
 
   idToUrlSrc: any={};
   idToUrlSrcWatch: any;
+
+  family_name: any;
   county: any;
   city: any;
-  keywords: any;
-  statement: any;
-  edits: any=[];
-  key: any;
-  path: any;
-  imagePaths: any=[];
-  pageIsLoaded: any;
-  imagesWatch: any;
-  imagesNotReady: any;
-  url: any;
-	pdf: any;
-  testUrl: any;
+
   image_self: any;
   image_home: any;
   image_room: any;
-  idsNot: any=[];
+
+  keywords: any;
+  statement: any;
+  key: any;
+  path: any;
+	pdf: any;
+  testUrl: any;
+
+  currentMode: any;
 // 
 
 // constructor
@@ -61,13 +57,17 @@ export class HostPage {
     this.pdf = window.pdf;
     this.key = this.params.get('key');
     this.path = "hosts/"+this.key;
+
     this.family_name = this.base.read(this.path+"/family_name");
     this.county = this.base.read(this.path+"/county");
     this.city = this.base.read(this.path+"/city");
+
     this.keywords = this.base.read(this.path+"/keywords");
     this.statement = this.base.read(this.path+"/statement");
 
     this.image_self = this.base.read(this.path+"/image_self");
+    this.image_home = this.base.read(this.path+"/image_home");
+    this.image_room = this.base.read(this.path+"/image_room");
 
     this.mobile = this.base.mobile;
 		this.user = this.base.user;
@@ -75,12 +75,32 @@ export class HostPage {
   }
 //
 
+  setMode(mode:any=null) {
+    this.currentMode = mode;
+  }
+
+  mode(mode) {
+    return this.currentMode==mode;
+  }
+
+  noMode() {
+    if ( this.currentMode ) {
+      return null;
+    } else {
+      return true;
+    }
+  }
+
+  yesMode() {
+    return !this.noMode();
+  }
+
   selectImage() {
     let attrib = arguments[0];
     let modal = this.modal.create(ImagesPage, {
       path: this.path,
       attrib: attrib,
-      idsNot: this.idsNot
+      idsNot: this.getUrlIds()
     });
     modal.onDidDismiss(data => {
       if (data) {
@@ -88,6 +108,14 @@ export class HostPage {
       }
     });
     modal.present();
+  }
+
+  getUrlIds() {
+    let items = [];
+    if ( this.image_self ) items.push( this.urlToId( this.image_self ) );
+    if ( this.image_home ) items.push( this.urlToId( this.image_home ) );
+    if ( this.image_room ) items.push( this.urlToId( this.image_room ) );
+    return items;
   }
 
 	print() {
@@ -111,13 +139,14 @@ export class HostPage {
   }
 
   urlToSrc( url ) {
-    let id = this.urlToId(url);
-    this.idsNot.push(id);
-    let src = this.idToUrlSrc[id];
-    if ( src ) {
-      return src;
-    } else {
-      return this.urlToSrcLater( url );
+    if ( url ) {
+      let id = this.urlToId(url);
+      let src = this.idToUrlSrc[id];
+      if ( src ) {
+        return src;
+      } else {
+        return this.urlToSrcLater( url );
+      }
     }
   }
 
@@ -133,28 +162,28 @@ export class HostPage {
   urlToSrcLaterProcess() {
     console.log("urlToSrcLaterProcess()")
     if ( !this.urlToSrcLaterWatch ) {
-      let urls = this.urlToSrcLaterUrls;
-      this.urlToSrcLaterProcessUrls( urls );
+      this.urlToSrcLaterProcessUrls();
     }
   }
 
-  urlToSrcLaterProcessUrls(urls) {
-    console.log("urlToSrcLaterProcessUrls(", urls, ")");
-    if ( urls.length ) {
+  urlToSrcLaterProcessUrls() {
+    console.log("urlToSrcLaterProcessUrls()");
+    this.urlToSrcLaterWatch = setInterval( ()=>{
       console.log("LOOPING START", );
-      this.urlToSrcLaterWatch = setInterval( ()=>{
+      let urls = this.urlToSrcLaterUrls;
+      if ( urls.length ) {
         for ( let i in urls ) {
           let url = urls[i];
           let ref = this.base.storage.ref(url);
           let src = ref.getDownloadURL();
           src.then( this.urlToSrcLaterProcessUrl ).catch( console.log );
         }
-      }, 1000)
-    } else {
-      console.log("LOOPING STOP");
-      clearInterval( this.urlToSrcLaterWatch );
-      this.urlToSrcLaterWatch = null;
-    }
+      } else {
+        console.log("LOOPING STOP");
+        clearInterval( this.urlToSrcLaterWatch );
+        this.urlToSrcLaterWatch = null;
+      }
+    }, 1000)
   }
 
   urlToSrcLaterProcessUrl(url) {
@@ -169,12 +198,11 @@ export class HostPage {
     let urlRef = url.split("?")[0];
     let urls = window.thisHost.urlToSrcLaterUrls;
     for ( let i in urls ) {
-      let urlRef = urls[i];
-      if ( urlRef==urls[i] ) {
+      if ( this.urlToId(urls[i])==this.urlToId(url) ) {
         if ( urls.length==1 ) {
-          urls = [];
+          window.thisHost.urlToSrcLaterUrls = [];
         } else {
-          urls.splice(i, i);
+          window.thisHost.urlToSrcLaterUrls.splice(i, i);
         }
       }
     }
@@ -189,8 +217,8 @@ export class HostPage {
     }
   }
 
-  // update( 'name', 'titleize', 'dave') //=> this.name == "Dave"
   update(attrib, processing:string=null, value:any=undefined) {
+    // update( 'name', 'titleize', 'dave') //=> this.name == "Dave"
     if (value!=undefined) {
       this[attrib] = value;
     }
@@ -203,6 +231,7 @@ export class HostPage {
       case "keywords": this[attrib] = this.toKeywords(this[attrib]); break;
     }
     this.base.update(this.path+"/"+attrib, this[attrib])
+    this.setMode();
   }
 
   toParagraphs(str) {
