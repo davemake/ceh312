@@ -54,12 +54,14 @@
 
 	</ion-list>
 
-  <ion-card class="shadow" *ngIf="noMode()" no-padding>
+  <ion-card class="shadow" id="pdfContent" *ngIf="noMode()" no-padding>
     <ion-grid no-padding>
       <ion-row>
         <ion-col>
           <ion-row>
+            <ion-col>
               <img src="assets/img/header.png" id="header">
+            </ion-col>
           </ion-row>
           <ion-row>
             <ion-col>
@@ -138,7 +140,9 @@
             </ion-col>
           </ion-row>
           <ion-row>
+            <ion-col>
               <img src="assets/img/footer.png" id="footer">
+            </ion-col>
           </ion-row>
         </ion-col>
       </ion-row>

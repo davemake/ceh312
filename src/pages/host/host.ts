@@ -132,15 +132,16 @@ export class HostPage {
 	print() {
 		this.platform.ready().then( ()=> {
       if (this.pdf) {
-        let html = document.getElementById("content_pdf")['innerHTML'];
+        let html = encodeURI( document.getElementById("pdfContent")['innerHTML'] );
+        alert( html );
         this.pdf.htmlToPDF({
           data: html,
-          documentSize: "A",
+          documentSize: "A4",
           landscape: "portrait",
-          type: "share"
+          type: "base64"
         });
       } else {
-        alert("Pdf works in android or ios");
+        alert("Pdf tested on android and chrome on desktop");
       }
 		});
 	}
