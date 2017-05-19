@@ -103,11 +103,18 @@ export class ImagesPage {
   }
 
   select(item) {
-    if (item) {
-      item = JSON.parse(JSON.stringify(item));
-      this.view.dismiss({attrib: this.attrib, url: item.path+"/"+item.name});
-    } else {
-      this.view.dismiss();
+    switch ( item ) {
+      case "order": 
+        this.view.dismiss({attrib: this.attrib, url: "assets/img/order.png"});
+        break;
+      default:
+        if (item) {
+          item = JSON.parse(JSON.stringify(item));
+          this.view.dismiss({attrib: this.attrib, url: item.path+"/"+item.name});
+        } else {
+          this.view.dismiss();
+        }
+        break;
     }
   }
 
