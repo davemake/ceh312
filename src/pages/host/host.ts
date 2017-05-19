@@ -101,7 +101,7 @@ export class HostPage {
       path: this.path,
       attrib: attrib,
       title: this.selectImageTitle(attrib),
-      idsNot: this.getUrlIds()
+      idsNot: this.getIdsInUse()
     });
     modal.onDidDismiss(data => {
       if (data) {
@@ -121,7 +121,7 @@ export class HostPage {
     return title;
   }
 
-  getUrlIds() {
+  getIdsInUse() {
     let items = [];
     if ( this.image_self ) items.push( this.urlToId( this.image_self ) );
     if ( this.image_home ) items.push( this.urlToId( this.image_home ) );
@@ -146,17 +146,29 @@ export class HostPage {
 	}
 
   urlToId( url ) {
-    return this.base.urlToId( url );
+    if ( url ) {
+      if ( url.match("assets/") ) {
+        return url;
+      } else {
+        return this.base.urlToId( url );
+      }
+    } else {
+      return null;
+    }
   }
 
   urlToSrc( url ) {
     if ( url ) {
-      let id = this.urlToId(url);
-      let src = this.idToUrlSrc[id];
-      if ( src ) {
-        return src;
+      if ( url.match("assets/") ) {
+        return url;
       } else {
-        return this.urlToSrcLater( url );
+        let id = this.urlToId(url);
+        let src = this.idToUrlSrc[id];
+        if ( src ) {
+          return src;
+        } else {
+          return this.urlToSrcLater( url );
+        }
       }
     }
   }
